@@ -16,6 +16,8 @@ public class ButtonCollision : MonoBehaviour
             animator = GetComponent<Animator>();
     }
 
+    //on collision
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!IsValidPresser(collision.gameObject))
