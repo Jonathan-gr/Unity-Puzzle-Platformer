@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9743208ead6aed34e9ee5e92447b0ff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseBounce: 2
+  baseBounce: 1.5
   bounceMultiplier: 1.04
   maxBounceVelocity: 25
   minFallSpeed: 2

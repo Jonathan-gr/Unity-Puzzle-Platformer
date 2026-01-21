@@ -23,10 +23,11 @@ public class GravityField : MonoBehaviour
 
     public List<string> allowedTags = new List<string> { "Player", "MovableBox", "Lizard" };
 
-
+    private HashSet<string> tagSet;
     private SpriteRenderer sr;
     void Awake()
     {
+        tagSet = new HashSet<string>(allowedTags);
         if (gravityGoesUp)
         {
             sr = GetComponent<SpriteRenderer>();
@@ -65,7 +66,7 @@ public class GravityField : MonoBehaviour
     {
         Rigidbody2D rb = other.attachedRigidbody;
         if (rb == null) return;
-        if (!allowedTags.Contains(other.tag)) return;
+        if (!tagSet.Contains(other.tag)) return;
 
         Vector2 direction = gravityGoesUp ? Vector2.up : Vector2.down;
         rb.AddForce(direction * gravityForce * rb.mass);

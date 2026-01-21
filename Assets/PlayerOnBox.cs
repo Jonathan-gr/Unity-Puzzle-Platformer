@@ -11,7 +11,7 @@ public class PlayerOnBox : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D collision)
     {
-        if (!collision.gameObject.CompareTag("MoveableBox"))
+        if (!collision.gameObject.CompareTag("MoveableBox") || !collision.gameObject.CompareTag("FallingTIle"))
             return;
 
         ContactPoint2D contact = collision.GetContact(0);

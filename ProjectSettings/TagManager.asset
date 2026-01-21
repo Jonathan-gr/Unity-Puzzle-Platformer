@@ -10,6 +10,7 @@ TagManager:
   - Ladder
   - GravityField
   - LazerBullet
+  - FallingTile
   layers:
   - Default
   - TransparentFX
