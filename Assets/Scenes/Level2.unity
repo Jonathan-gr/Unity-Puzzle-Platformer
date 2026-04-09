@@ -373,6 +373,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lizard
       objectReference: {fileID: 0}
+    - target: {fileID: 1002312953626424254, guid: 346fc0a62c238264190b2b7bd534ffd1, type: 3}
+      propertyPath: bounceMultiplier
+      value: 0.9
+      objectReference: {fileID: 0}
     - target: {fileID: 6431442491747174865, guid: 346fc0a62c238264190b2b7bd534ffd1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 36.58

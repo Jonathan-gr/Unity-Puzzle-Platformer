@@ -20,6 +20,7 @@ public class ButtonCollision : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+
         if (!IsValidPresser(collision.gameObject))
             return;
 
@@ -30,6 +31,9 @@ public class ButtonCollision : MonoBehaviour
         {
             animator.SetBool("ButtonPushedDown", true);
             NotifyPressed();
+
+
+
         }
     }
 
@@ -56,8 +60,11 @@ public class ButtonCollision : MonoBehaviour
     {
         foreach (var mb in listeners)
         {
+            Debug.Log(mb);
             if (mb is IButtonListener listener)
+
                 listener.OnButtonPressed();
+
         }
     }
 

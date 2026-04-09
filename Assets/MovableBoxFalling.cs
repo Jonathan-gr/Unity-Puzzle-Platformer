@@ -7,6 +7,7 @@ public class MovableBoxFalling : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    private int groundLayer;
 
     public GameObject LizardDiedPrefab;
     private float originalGravity;
@@ -16,6 +17,7 @@ public class MovableBoxFalling : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         originalGravity = rb.gravityScale;
+        groundLayer = LayerMask.NameToLayer("Ground");
     }
 
 
@@ -23,6 +25,8 @@ public class MovableBoxFalling : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+
+
         if (!collision.gameObject.CompareTag("Lizard") && !collision.gameObject.CompareTag("Player"))
             return;
 

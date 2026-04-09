@@ -28,9 +28,10 @@ public class MovingWall : MonoBehaviour, IButtonListener
     public void OnButtonPressed()
     {
         pressCount++;
-
+        Debug.Log("press");
         if (pressCount == buttonsRequired)
         {
+            Debug.Log("move");
             MoveTo(targetPos);
         }
 
@@ -49,8 +50,13 @@ public class MovingWall : MonoBehaviour, IButtonListener
         if (moveRoutine != null)
 
         {
-            activeLoop.Stop();
-            Destroy(activeLoop.gameObject);
+            if (activeLoop)
+            {
+                activeLoop.Stop();
+                Destroy(activeLoop.gameObject);
+
+            }
+
             StopCoroutine(moveRoutine);
         }
 

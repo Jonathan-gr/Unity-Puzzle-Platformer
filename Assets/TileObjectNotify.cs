@@ -61,4 +61,6 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
             // rb.linearVelocity = new Vector2(1f, rb.linearVelocity.y); 
         }
     }
+
+
 }
