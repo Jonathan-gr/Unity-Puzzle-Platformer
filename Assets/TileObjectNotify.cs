@@ -1,66 +1,103 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 
 public class TileObjectNotify : MonoBehaviour, IButtonListener
 {
-    [SerializeField] private List<GameObject> tilesToDestroyInOrder = new List<GameObject>();
-    private int currentIndex = 0;
-    public float fallSpeed = 2.4f;
-    public float mass = 10f;
+    [SerializeField] private List<GameObject> tilesToMakeFallInOrder = new List<GameObject>();
 
-    // Using Hashtable as requested to store rigidbodies of falling tiles
-    private Hashtable fallingRigidBodies = new Hashtable();
+    private int currentIndex = 0;
+    private bool resetNeeded = false;
+    private int resetIndex;
+
+    // Store original state for each tile
+    private List<Vector3> originalPositions = new List<Vector3>();
+    private List<Quaternion> originalRotations = new List<Quaternion>();
+    private List<Rigidbody2D> tileRigidbodies = new List<Rigidbody2D>();
+
+
+    void Start()
+    {
+        SaveOriginalStates();
+
+    }
+
+    private void SaveOriginalStates()
+    {
+        foreach (GameObject tile in tilesToMakeFallInOrder)
+        {
+            if (tile != null)
+            {
+                originalPositions.Add(tile.transform.position);
+                originalRotations.Add(tile.transform.rotation);
+
+                Rigidbody2D rb = tile.GetComponent<Rigidbody2D>();
+                tileRigidbodies.Add(rb);
+
+                if (rb != null)
+                    rb.bodyType = RigidbodyType2D.Kinematic;
+            }
+        }
+    }
 
     public void OnButtonPressed()
     {
-        if (currentIndex >= tilesToDestroyInOrder.Count)
+        // === SWITCH TO RESET MODE ===
+        if (!resetNeeded && currentIndex >= tilesToMakeFallInOrder.Count)
         {
-            Debug.Log("No more tiles to fall");
+            resetNeeded = true;
+            resetIndex = tilesToMakeFallInOrder.Count - 1;
+
+        }
+
+        // === FALL MODE ===
+        if (!resetNeeded)
+        {
+            GameObject tile = tilesToMakeFallInOrder[currentIndex];
+            Rigidbody2D rb = tileRigidbodies[currentIndex];
+
+            if (tile == null || rb == null) return;
+
+            rb.bodyType = RigidbodyType2D.Dynamic;
+
+            Debug.Log($"Tile {currentIndex} → FALLING");
+
+            currentIndex++;
             return;
         }
-        Debug.Log("1");
-        GameObject tile = tilesToDestroyInOrder[currentIndex];
-        if (tile != null)
+
+        // === RESET MODE ===
+        if (resetIndex >= 0)
         {
-            Debug.Log("2");
-            Rigidbody2D rb = tile.GetComponent<Rigidbody2D>();
+            ResetTile(resetIndex);
 
-            if (rb != null)
-            {
-                Debug.Log("3");
-                // 1. Make the tile fall by switching to Dynamic
-                rb.bodyType = RigidbodyType2D.Dynamic;
+            Debug.Log($"Tile {resetIndex} → RESET");
 
-
-
-                // 2. Add it to your hashtable (using index as key)
-                if (!fallingRigidBodies.ContainsKey(currentIndex))
-                {
-                    fallingRigidBodies.Add(currentIndex, rb);
-                }
-            }
+            resetIndex--;
         }
 
-        currentIndex++;
-    }
-
-    public void OnButtonReleased()
-    {
-        Debug.Log("Button released");
-    }
-
-    // FixedUpdate is not strictly needed for gravity, 
-    // but if you want to add horizontal force while they fall:
-    void FixedUpdate()
-    {
-        foreach (DictionaryEntry entry in fallingRigidBodies)
+        // === DONE RESETTING ===
+        if (resetIndex < 0)
         {
-            Rigidbody2D rb = (Rigidbody2D)entry.Value;
-            // Optional: add a slight horizontal drift or logic here
-            // rb.linearVelocity = new Vector2(1f, rb.linearVelocity.y); 
+            currentIndex = 0;
+            resetNeeded = false;
+
         }
     }
 
+    private void ResetTile(int index)
+    {
 
+        Debug.Log("reset here");
+        Rigidbody2D rb = tileRigidbodies[index];
+        GameObject tile = tilesToMakeFallInOrder[index];
+
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+
+        tile.transform.position = originalPositions[index];
+        tile.transform.rotation = originalRotations[index];
+    }
+
+    public void OnButtonReleased() { }
 }

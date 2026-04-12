@@ -28,10 +28,8 @@ public class MovingWall : MonoBehaviour, IButtonListener
     public void OnButtonPressed()
     {
         pressCount++;
-        Debug.Log("press");
         if (pressCount == buttonsRequired)
         {
-            Debug.Log("move");
             MoveTo(targetPos);
         }
 

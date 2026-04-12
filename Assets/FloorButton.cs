@@ -60,7 +60,7 @@ public class ButtonCollision : MonoBehaviour
     {
         foreach (var mb in listeners)
         {
-            Debug.Log(mb);
+
             if (mb is IButtonListener listener)
 
                 listener.OnButtonPressed();

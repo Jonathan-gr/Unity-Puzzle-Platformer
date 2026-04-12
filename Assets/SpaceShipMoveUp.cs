@@ -1,44 +1,64 @@
 using UnityEngine;
-using UnityEngine.U2D.IK;
 
 public class SpaceShipMoveUp : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-
     public bool isGoingUp = false;
-
     public float flightSpeed = 1f;
+
     private Rigidbody2D rb;
     private Animator animator;
-
-
+    public GameObject WinUi;
+    private GameObject storedPlayer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
+
     void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+
+        if (collision.CompareTag("Player"))
         {
+
             if (Input.GetKey(KeyCode.UpArrow))
             {
+
+                storedPlayer = collision.gameObject;
+
                 isGoingUp = true;
                 animator.SetBool("isGoingUp", true);
-                collision.gameObject.SetActive(false);
-            }
 
+                storedPlayer.SetActive(false);
+            }
         }
     }
 
+    void Update()
+    {
+
+        if (storedPlayer != null && Input.GetKeyDown(KeyCode.Space))
+        {
+            storedPlayer.SetActive(true);
+
+            // Optional: place player back near spaceship
+            storedPlayer.transform.position = transform.position + Vector3.up * 1.5f;
+
+            isGoingUp = false;
+            animator.SetBool("isGoingUp", false);
+            WinUi.SetActive(false);
+
+            storedPlayer = null;
+        }
+    }
 
     void FixedUpdate()
     {
         if (isGoingUp)
         {
+
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, flightSpeed);
         }
     }
-
 }

@@ -11,6 +11,7 @@ TagManager:
   - GravityField
   - LazerBullet
   - FallingTile
+  - Ground
   layers:
   - Default
   - TransparentFX
