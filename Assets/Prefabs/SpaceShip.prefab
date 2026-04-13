@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5908755425437711617}
   - component: {fileID: 5936206516663760423}
   - component: {fileID: 8153417038674043593}
+  - component: {fileID: 8182548971357015153}
   m_Layer: 0
   m_Name: SpaceShip
   m_TagString: Untagged
@@ -174,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGoingUp: 0
   flightSpeed: 1
+  WinUi: {fileID: 0}
 --- !u!50 &5936206516663760423
 Rigidbody2D:
   serializedVersion: 5
@@ -214,3 +216,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WinUi: {fileID: 0}
+--- !u!114 &8182548971357015153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8487934553205756682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39809536a1a56994c93fb7278d8c1320, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
