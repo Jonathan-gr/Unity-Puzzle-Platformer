@@ -956,8 +956,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8909283380647757723}
-  - {fileID: 8185532327455791879}
   - {fileID: 230095794064686933}
+  - {fileID: 8185532327455791879}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1751,7 +1751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5af5d68863bf947b0c559af9da0045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenuUI: {fileID: 8113892466854157842}
+  uiManager: {fileID: 0}
 --- !u!1 &8309168608818053356
 GameObject:
   m_ObjectHideFlags: 0

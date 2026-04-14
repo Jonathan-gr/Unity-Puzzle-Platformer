@@ -7,7 +7,7 @@ public class SpaceShipMoveUp : MonoBehaviour
 
     private Rigidbody2D rb;
     private Animator animator;
-    public GameObject WinUi;
+
 
 
     void Start()

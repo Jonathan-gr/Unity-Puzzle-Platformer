@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerOutOfBounds : MonoBehaviour
 {
 
-    public GameObject LoseUi;
+    public GameUIManager uiManager;
     public float minY;
     public float maxY = Mathf.Infinity;
     public float minX = -Mathf.Infinity;
@@ -17,10 +17,10 @@ public class PlayerOutOfBounds : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.y < minY || transform.position.y > maxY || transform.position.x < minX || transform.position.x > maxY)
+        if (transform.position.y < minY || transform.position.y > maxY || transform.position.x < minX || transform.position.x > maxX)
         {
             Debug.Log(transform.position);
-            LoseUi.SetActive(true);
+            uiManager.TryShowLose();
         }
     }
 }

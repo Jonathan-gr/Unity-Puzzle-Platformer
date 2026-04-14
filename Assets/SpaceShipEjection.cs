@@ -3,11 +3,10 @@ using UnityEngine;
 public class SpaceShipEjection : MonoBehaviour
 {
 
-    public GameObject WinUi;
-    private GameObject storedPlayer;
 
+    private GameObject storedPlayer;
+    public GameUIManager uiManager;
     public bool allowEjection = false;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
 
     // Update is called once per frame
@@ -21,7 +20,7 @@ public class SpaceShipEjection : MonoBehaviour
             // Optional: place player back near spaceship
             storedPlayer.transform.position = transform.position + Vector3.up * 1.5f;
 
-            WinUi.SetActive(false);
+            uiManager.HideAll();
 
             storedPlayer = null;
         }

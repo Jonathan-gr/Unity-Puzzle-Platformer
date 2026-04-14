@@ -1,19 +1,17 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpaceShipPausesGame : MonoBehaviour
 {
-    public GameObject WinUi;
+    public GameUIManager uiManager;
 
     void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                WinUi.SetActive(true);
+                uiManager.TryShowWin();
             }
-
         }
     }
 }

@@ -9,6 +9,7 @@ public class NextLevelFromContinueButton : MonoBehaviour
 
     public void LoadNextLevel()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene("Level" + nextLevel);
     }
 }
