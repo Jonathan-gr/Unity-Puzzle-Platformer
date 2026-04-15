@@ -1,41 +1,58 @@
 using UnityEngine;
+using System.Collections.Generic;
+
 public class PlayerOnBox : MonoBehaviour
 {
+    public List<string> allowedTags = new List<string> { "MovingPlatform", "MoveableBox", "Lizard" };
+
+    private HashSet<string> tagSet;
     private Rigidbody2D playerRb;
-    private Rigidbody2D boxRb;
+    private Rigidbody2D currentPlatform;
+    private Vector2 lastPlatformPos;
 
     void Awake()
     {
         playerRb = GetComponent<Rigidbody2D>();
+        tagSet = new HashSet<string>(allowedTags);
     }
 
-    void OnCollisionStay2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-
-
-        ContactPoint2D contact = collision.GetContact(0);
-
-        // Player standing on top
-        if (contact.normal.y > 0.5f)
+        if (tagSet.Contains(collision.gameObject.tag))
         {
-            boxRb = collision.rigidbody;
-        }
-    }
-
-    void FixedUpdate()
-    {
-        if (boxRb)
-        {
-            playerRb.linearVelocity += boxRb.linearVelocity;
+            Debug.Log("1");
+            // Ensure we are hitting the top of the box
+            if (collision.GetContact(0).normal.y > 0.7f)
+            {
+                Debug.Log("2");
+                currentPlatform = collision.rigidbody;
+                if (currentPlatform != null)
+                    lastPlatformPos = currentPlatform.position;
+            }
         }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.rigidbody == boxRb)
+        if (currentPlatform != null && collision.rigidbody == currentPlatform)
         {
-            boxRb = null;
+            currentPlatform = null;
         }
     }
-    //asd
+
+    void FixedUpdate()
+    {
+        if (currentPlatform != null)
+        {
+            Debug.Log("3");
+            Vector2 currentPlatformPos = currentPlatform.position;
+            Vector2 delta = currentPlatformPos - lastPlatformPos;
+
+            // Move player
+            playerRb.position += delta;
+
+            // Sync for next frame
+            lastPlatformPos = currentPlatformPos;
+        }
+    }
 }

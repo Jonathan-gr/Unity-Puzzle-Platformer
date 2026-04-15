@@ -28,7 +28,7 @@ public class MovingWall : MonoBehaviour, IButtonListener
     public void OnButtonPressed()
     {
         pressCount++;
-        if (pressCount == buttonsRequired)
+        if (pressCount == buttonsRequired || buttonsRequired == 0)
         {
             MoveTo(targetPos);
         }

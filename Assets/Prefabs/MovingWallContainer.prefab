@@ -187,7 +187,7 @@ GameObject:
   - component: {fileID: 2094205196968339179}
   m_Layer: 6
   m_Name: MovingWallContainer
-  m_TagString: Untagged
+  m_TagString: MovingPlatform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,3 +269,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveOffset: {x: 0, y: 2, z: 0}
   moveSpeed: 0.5
+  buttonsRequired: 2
+  openSesame: {fileID: 0}
+  openDoorVolume: 0.2
