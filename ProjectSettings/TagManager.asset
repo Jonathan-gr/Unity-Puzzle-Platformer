@@ -12,6 +12,8 @@ TagManager:
   - LazerBullet
   - FallingTile
   - Ground
+  - MovingPlatform
+  - Gem
   layers:
   - Default
   - TransparentFX

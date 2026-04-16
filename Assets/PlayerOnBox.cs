@@ -20,11 +20,11 @@ public class PlayerOnBox : MonoBehaviour
     {
         if (tagSet.Contains(collision.gameObject.tag))
         {
-            Debug.Log("1");
+
             // Ensure we are hitting the top of the box
             if (collision.GetContact(0).normal.y > 0.7f)
             {
-                Debug.Log("2");
+
                 currentPlatform = collision.rigidbody;
                 if (currentPlatform != null)
                     lastPlatformPos = currentPlatform.position;
@@ -44,7 +44,6 @@ public class PlayerOnBox : MonoBehaviour
     {
         if (currentPlatform != null)
         {
-            Debug.Log("3");
             Vector2 currentPlatformPos = currentPlatform.position;
             Vector2 delta = currentPlatformPos - lastPlatformPos;
 
