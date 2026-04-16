@@ -7,7 +7,8 @@ public class LazerCollision : MonoBehaviour
 
     [Header("Detection Settings")]
     public string lizardTag = "Lizard";
-    public string[] ignoreTags = { "Ladder" };
+    public string gemTag = "Gem";
+    public string[] ignoreTags = { "Ladder", "SpaceShip" };
     void Start()
     {
         // Automatically destroy after 3 seconds so you don't clutter the scene
@@ -28,6 +29,21 @@ public class LazerCollision : MonoBehaviour
 
 
         }
+
+        else if (collision.CompareTag(gemTag))
+        {
+            GemHitByLazer gem =
+                collision.GetComponentInParent<GemHitByLazer>();
+
+            if (gem != null)
+            {
+                gem.gemHitByLazer();
+            }
+
+
+        }
+
+
         if (!ignoreTags.Contains(collision.gameObject.tag))
         {
             Destroy(gameObject);

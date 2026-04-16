@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3085976072303562556}
   - component: {fileID: 6063058990712218409}
   - component: {fileID: 2005633842928943401}
+  - component: {fileID: 7128189217507243390}
   m_Layer: 0
   m_Name: GameListener
   m_TagString: Untagged
@@ -61,3 +62,15 @@ MonoBehaviour:
   pauseUI: {fileID: 0}
   winUI: {fileID: 0}
   loseUI: {fileID: 0}
+--- !u!114 &7128189217507243390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6335827717433165416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4aa36d157b45b34da5e7b3b882661da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
