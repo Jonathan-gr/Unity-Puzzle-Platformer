@@ -15,32 +15,30 @@ public class GravityField : MonoBehaviour
     public float newGravityScale = 1f;
 
     [Header("Rotation Settings")]
-    public float rotationSpeed = 5f; // How fast they flip
+    public float rotationSpeed = 5f;
 
     private Dictionary<Rigidbody2D, float> oldSpeed = new Dictionary<Rigidbody2D, float>();
     private Dictionary<Rigidbody2D, float> oldGravityScale = new Dictionary<Rigidbody2D, float>();
 
-    // Track transforms of objects currently inside the field
-    private HashSet<Transform> activeTransforms = new HashSet<Transform>();
-
     public List<string> allowedTags = new List<string> { "Player", "MovableBox", "Lizard" };
     private HashSet<string> tagSet;
-    private SpriteRenderer sr;
 
     void Awake()
     {
         tagSet = new HashSet<string>(allowedTags);
+
         if (gravityGoesUp)
         {
-            sr = GetComponent<SpriteRenderer>();
-            if (sr != null) sr.flipY = true;
             gravityForce = gravityForceUp;
             speedMultiplier = speedMultiplierUp;
+            transform.rotation = Quaternion.Euler(0, 0, 180);
+
         }
         else
         {
             gravityForce = gravityForceDown;
             speedMultiplier = speedMultiplierDown;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -50,9 +48,6 @@ public class GravityField : MonoBehaviour
 
         Rigidbody2D rb = other.attachedRigidbody;
         if (rb == null) return;
-
-        // Add to the rotation tracking set
-        activeTransforms.Add(other.transform);
 
         if (other.TryGetComponent(out IMoveable moveable))
         {
@@ -76,15 +71,31 @@ public class GravityField : MonoBehaviour
         Vector2 direction = gravityGoesUp ? Vector2.up : Vector2.down;
         rb.AddForce(direction * gravityForce * rb.mass);
 
-        // Apply Smooth Rotation
-        float targetZ = gravityGoesUp ? 180f : 0f;
-        Quaternion targetRotation = Quaternion.Euler(0, 0, targetZ);
-
-        other.transform.rotation = Quaternion.Lerp(
-            other.transform.rotation,
-            targetRotation,
-            Time.deltaTime * rotationSpeed
-        );
+        // === DIFFERENT ROTATION BEHAVIOR ===
+        if (other.CompareTag("Player"))
+        {
+            // PLAYER: Rotate root (old behavior)
+            float targetZ = gravityGoesUp ? 180f : 0f;
+            other.transform.rotation = Quaternion.Lerp(
+                other.transform.rotation,
+                Quaternion.Euler(0, 0, targetZ),
+                Time.deltaTime * rotationSpeed
+            );
+        }
+        else if (other.CompareTag("Lizard"))
+        {
+            // LIZARD: Rotate only Visual child
+            Transform visual = other.transform.Find("Visual");
+            if (visual != null)
+            {
+                float targetZ = gravityGoesUp ? 180f : 0f;
+                visual.rotation = Quaternion.Lerp(
+                    visual.rotation,
+                    Quaternion.Euler(0, 0, targetZ),
+                    Time.deltaTime * rotationSpeed
+                );
+            }
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
@@ -92,12 +103,19 @@ public class GravityField : MonoBehaviour
         Rigidbody2D rb = other.attachedRigidbody;
         if (rb == null) return;
 
-        // Remove from tracking
-        activeTransforms.Remove(other.transform);
+        // Reset Rotation
+        if (other.CompareTag("Player"))
+        {
+            other.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else if (other.CompareTag("Lizard"))
+        {
+            Transform visual = other.transform.Find("Visual");
+            if (visual != null)
+                visual.rotation = Quaternion.Euler(0, 0, 0);
+        }
 
-        // Reset rotation immediately or start a separate coroutine if you want it smooth outside
-        other.transform.rotation = Quaternion.Euler(0, 0, 0);
-
+        // Reset movement values
         if (other.TryGetComponent(out IMoveable moveable) &&
             oldSpeed.TryGetValue(rb, out float originalSpeed) &&
             oldGravityScale.TryGetValue(rb, out float originalGravityScale))

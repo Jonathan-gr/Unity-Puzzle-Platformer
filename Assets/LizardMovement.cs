@@ -31,7 +31,11 @@ public class LizardMovement : MonoBehaviour, IMoveable
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+
+        animator = transform.Find("Visual").GetComponent<Animator>();
+        if (animator == null)
+            Debug.LogError("Animator not found on Visual child!", this);
+
         lastX = rb.position.x;
     }
 
@@ -74,22 +78,27 @@ public class LizardMovement : MonoBehaviour, IMoveable
 
     void UpdateVisualOrientation()
     {
-        // Check if upside down (Z rotation near 180)
-        bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
+        // Find the rotating visual object
+        Transform visual = transform.Find("Visual");     // Change to "Body" if you used that name
+
+        if (visual == null)
+        {
+            Debug.LogWarning("Visual child not found on Lizard!", this);
+            return;
+        }
+
+        // Check the child's rotation instead of root
+        bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(visual.eulerAngles.z, 180f)) < 15f;
 
         Vector3 scale = transform.localScale;
-
-        // We use scale.y to keep the scale consistent if you've resized the lizard
         float baseScale = Mathf.Abs(scale.y);
 
         if (isUpsideDown)
         {
-            // SWAPPED: If it was wrong before, we flip these two
             scale.x = (direction == 1) ? baseScale : -baseScale;
         }
         else
         {
-            // SWAPPED: If it was wrong before, we flip these two
             scale.x = (direction == 1) ? -baseScale : baseScale;
         }
 

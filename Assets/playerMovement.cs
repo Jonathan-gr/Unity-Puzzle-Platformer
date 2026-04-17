@@ -6,6 +6,8 @@ public class PlayerMovement : MonoBehaviour, IMoveable
     public float moveSpeed = 6f;
     public float jumpForce = 8;
 
+    public float gravityJumpDown = 4f;
+
     [Header("Ground Detection")]
     public Transform groundCheck;
     [SerializeField] private LayerMask combinedGroundMask;
@@ -36,6 +38,8 @@ public class PlayerMovement : MonoBehaviour, IMoveable
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        if (gravityJumpDown == 0)
+            gravityJumpDown = 1f;
     }
 
     private void Update()
@@ -77,12 +81,18 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         // --- FIX 2: JUMP DIRECTION ---
         if (shouldJump)
         {
+            // 1. Determine direction (Up if normal, Down if upside down)
             bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
+            Vector2 jumpDir = isUpsideDown ? Vector2.down / gravityJumpDown : Vector2.up;
 
-            // If upside down, "Up" is actually global Down
-            float calculatedJump = isUpsideDown ? -jumpForce : jumpForce;
+            // 2. Reset Y velocity ONLY so the jump is consistent
+            // But we keep the X velocity so we don't stop moving sideways
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
 
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, calculatedJump);
+            // 3. Apply the jump as an Impulse
+            // Impulse is perfect for jumps because it's an instant "kick"
+            rb.AddForce(jumpDir * jumpForce, ForceMode2D.Impulse);
+
             shouldJump = false;
         }
     }
@@ -97,6 +107,7 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         RaycastHit2D hit = Physics2D.BoxCast(groundCheck.position, boxSize, 0f, castDir, castDistance, combinedGroundMask);
         return hit.collider != null;
     }
+
 
     private void UpdateAnimatorParameters()
     {
