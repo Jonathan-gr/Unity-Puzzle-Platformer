@@ -19,28 +19,27 @@ public class PlayerMovement : MonoBehaviour, IMoveable
 
     private Animator animator;
 
-    public Vector2 boxSize = new Vector2(0.5f, 0.1f); // Width should be slightly narrower than your player
-    public float castDistance = 0.1f;                // How far down to look
+    public Vector2 boxSize = new Vector2(0.5f, 0.1f);
+    public float castDistance = 0.1f;
 
     [Header("Sound SFX")]
     public AudioClip jumpSound;
     public float jumpVolume = 0.1f;
+
     public float MoveSpeed
     {
         get => moveSpeed;
         set => moveSpeed = value;
     }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-
     }
 
     private void Update()
     {
-
-        // 1. Input Management
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -48,13 +47,21 @@ public class PlayerMovement : MonoBehaviour, IMoveable
             shouldJump = true;
         }
 
-        // 2. Flip character based on direction
+        // --- FIX 1: FACING DIRECTION ---
+        // We check if the Z rotation is approximately 180
+        bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
 
         Vector3 scale = transform.localScale;
         if (horizontalInput > 0)
-            scale.x = Mathf.Abs(scale.x);
+        {
+            // If upside down, a positive scale.x actually points Left. 
+            // So we flip the logic here.
+            scale.x = isUpsideDown ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+        }
         else if (horizontalInput < 0)
-            scale.x = -Mathf.Abs(scale.x);
+        {
+            scale.x = isUpsideDown ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        }
         transform.localScale = scale;
 
         UpdateAnimatorParameters();
@@ -62,32 +69,32 @@ public class PlayerMovement : MonoBehaviour, IMoveable
 
     private void FixedUpdate()
     {
-
-        // 3. Ground Check
-        //isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         isGrounded = CheckIsGrounded();
-        // 4. Horizontal Movement
 
+        // 4. Horizontal Movement
         rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
 
-
-        // 5. Jump Physics
+        // --- FIX 2: JUMP DIRECTION ---
         if (shouldJump)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
+
+            // If upside down, "Up" is actually global Down
+            float calculatedJump = isUpsideDown ? -jumpForce : jumpForce;
+
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, calculatedJump);
             shouldJump = false;
-
-
-            // SoundManager.Instance.PlaySFX(jumpSound, jumpVolume);
         }
-
-
-
     }
+
     public bool CheckIsGrounded()
     {
-        // One cast detects both layers at once
-        RaycastHit2D hit = Physics2D.BoxCast(groundCheck.position, boxSize, 0f, Vector2.down, castDistance, combinedGroundMask);
+        // --- FIX 3: GROUND CHECK DIRECTION ---
+        // If upside down, we need to cast the box UP toward the ceiling
+        bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
+        Vector2 castDir = isUpsideDown ? Vector2.up : Vector2.down;
+
+        RaycastHit2D hit = Physics2D.BoxCast(groundCheck.position, boxSize, 0f, castDir, castDistance, combinedGroundMask);
         return hit.collider != null;
     }
 
@@ -95,12 +102,12 @@ public class PlayerMovement : MonoBehaviour, IMoveable
     {
         animator.SetBool("isGrounded", isGrounded);
         animator.SetBool("isRunning", horizontalInput != 0);
-        animator.SetFloat("yVelocity", rb.linearVelocity.y);
+
+        // --- FIX 4: ANIMATOR VELOCITY ---
+        // If upside down, a negative Y velocity is actually "rising" toward the ceiling
+        bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
+        float visualYVelocity = isUpsideDown ? -rb.linearVelocity.y : rb.linearVelocity.y;
+
+        animator.SetFloat("yVelocity", visualYVelocity);
     }
-
-
 }
-
-
-
-

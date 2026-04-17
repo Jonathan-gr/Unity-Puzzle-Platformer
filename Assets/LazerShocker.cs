@@ -28,24 +28,31 @@ public class LazerShocker : MonoBehaviour
     }
     void Shoot()
     {
+        // 1. Better direction detection
+        // If the player is rotated 180, we need to know if they are visually facing 'Left' or 'Right'
+        // A simple way is to check the localScale.x against the rotation
+        bool isUpsideDown = Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, 180f)) < 10f;
+
+        // Calculate final direction:
+        float direction = transform.localScale.x > 0 ? 1f : -1f;
+
+        // If upside down, the scale logic is inverted, so we flip it back
+        if (isUpsideDown) direction *= -1;
+
+        // 2. Instantiate the bullet
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
 
-        // Check the scale of the object this script is attached to (the player)
-        // If scale.x is positive, shoot right (1). If negative, shoot left (-1).
-        float direction = transform.lossyScale.x > 0 ? 1f : -1f;
-
+        // 3. Set Velocity
+        // We set y to 0 to keep the bullet horizontal
         rb.linearVelocity = new Vector2(direction * bulletSpeed, 0);
 
-        // Optional: Flip the bullet sprite to match direction
-
-        Vector3 scale = bullet.transform.localScale;
-        if (direction > 0)
-            scale.x = Mathf.Abs(scale.x);
-        else if (direction < 0)
-            scale.x = -Mathf.Abs(scale.x);
-        bullet.transform.localScale = scale;
+        // 4. Flip the bullet sprite to match
+        Vector3 bScale = bullet.transform.localScale;
+        bScale.x = direction > 0 ? Mathf.Abs(bScale.x) : -Mathf.Abs(bScale.x);
+        bullet.transform.localScale = bScale;
     }
+
 
     void ShootSoundEffect()
     {

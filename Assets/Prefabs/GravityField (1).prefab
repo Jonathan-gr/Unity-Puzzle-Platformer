@@ -54,6 +54,7 @@ MonoBehaviour:
   speedMultiplierDown: 0.3
   speedMultiplierUp: 0.8
   newGravityScale: 1
+  rotationSpeed: 2
   allowedTags:
   - Player
   - Box
