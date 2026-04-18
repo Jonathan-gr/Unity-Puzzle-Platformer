@@ -3,98 +3,84 @@ using UnityEngine;
 public class BounceOffLizard : MonoBehaviour
 {
     [Header("Bounce Settings")]
-    [Tooltip("Base bounce force when landing gently")]
     public float baseBounce = 1f;
-
-    [Tooltip("Extra multiplier applied to the downward speed to get bounce height")]
-    public float bounceMultiplier = 1.1f;   // > 1.0 = bouncier than pure reflection
-
-    [Tooltip("Maximum allowed upward velocity after bounce")]
+    public float bounceMultiplier = 1.1f;
     public float maxBounceVelocity = 25f;
-
-    [Tooltip("Minimum downward speed required to trigger bounce")]
     public float minFallSpeed = 2f;
 
-    [Header("Lizard Momentum Bonus")]
-    [Tooltip("How much of the lizard's upward velocity gets added to the bounce")]
-    public float lizardUpwardBonusFactor = 0.7f;
+    [Header("Lizard Reaction")]
+    public float lizardPushDownForce = 18f;
+    public float minLizardPush = 8f;
 
-    [Header("Squash & First Jump")]
-    public bool jumpedOnFirstLizard = false;
-    public float lizardJumpBonus = 0f;
-    public float crushHeight = 23f; // renamed for clarity
+    [Header("Player Reaction - Lizard Landing on Player")]
+    public float lizardBounceUpForce = 22f;     // How high lizard jumps when landing on player
+    public float minLizardBounceSpeed = 10f;
 
     public GameObject LizardDiedPrefab;
-
-    [Header("Bounce Sound")]
-    public AudioClip smallBounceSound;
-    public AudioClip largeBounceSound;
-    public float smallBounceVolume = 0.07f;
-    public float bigBounceVolume = 0.1f;
+    public float crushHeight = 23f;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Player") || !collision.CompareTag("MoveableBox"))
+        if (!collision.CompareTag("Player"))
             return;
-
 
         Rigidbody2D playerRb = collision.attachedRigidbody;
-        if (playerRb == null)
-            return;
-
-        // Only bounce if player is falling fast enough
-        float fallSpeed = -playerRb.linearVelocity.y; // positive = downward
-        if (fallSpeed < minFallSpeed)
-            return;
-
-        // --- Crush / kill lizard if falling too fast ---
-        if (fallSpeed > crushHeight)
-        {
-            if (LizardDiedPrefab != null)
-            {
-                Instantiate(LizardDiedPrefab, transform.position, Quaternion.identity);
-            }
-            Destroy(transform.parent.gameObject);
-            return;
-        }
-
-        // --- Get lizard's upward velocity (if moving up) ---
         Rigidbody2D lizardRb = GetComponentInParent<Rigidbody2D>();
-        float lizardUpVelocity = 0f;
-        if (lizardRb != null)
+
+        if (playerRb == null) return;
+
+        float relativeYVelocity = playerRb.linearVelocity.y - (lizardRb != null ? lizardRb.linearVelocity.y : 0);
+
+        // === CASE 1: Player falling onto Lizard ===
+        if (relativeYVelocity < -minFallSpeed)   // Player is moving down relative to lizard
         {
-            lizardUpVelocity = Mathf.Max(0f, lizardRb.linearVelocity.y); // only upward counts
+            float fallSpeed = -playerRb.linearVelocity.y;
+
+            if (fallSpeed > crushHeight)
+            {
+                if (LizardDiedPrefab != null)
+                    Instantiate(LizardDiedPrefab, transform.position, Quaternion.identity);
+                Destroy(transform.parent.gameObject);
+                return;
+            }
+
+            // Bounce Player Up
+            float bounceVelocity = fallSpeed * bounceMultiplier + baseBounce;
+            bounceVelocity = Mathf.Min(bounceVelocity, maxBounceVelocity);
+
+            playerRb.linearVelocity = new Vector2(playerRb.linearVelocity.x, bounceVelocity);
+
+            // Push Lizard Down
+            if (lizardRb != null)
+            {
+                float push = Mathf.Max(minLizardPush, fallSpeed * 0.9f);
+                lizardRb.linearVelocity = new Vector2(lizardRb.linearVelocity.x, -push);
+                lizardRb.AddForce(Vector2.down * lizardPushDownForce, ForceMode2D.Impulse);
+            }
         }
-
-        // --- Calculate bounce velocity ---
-        // Start with the impact speed, multiply by bounce factor, add lizard bonus
-
-        float bounceVelocity = fallSpeed * bounceMultiplier;
-        // Add bonus from lizard's upward movement
-        bounceVelocity += lizardUpVelocity * lizardUpwardBonusFactor;
-
-
-        bounceVelocity += baseBounce;
-
-
-        // Cap the result
-        bounceVelocity = Mathf.Min(bounceVelocity, maxBounceVelocity);
-
-        // Preserve horizontal velocity, set new upward velocity
-        playerRb.linearVelocity = new Vector2(
-            playerRb.linearVelocity.x,
-            bounceVelocity
-        );
-
-        // --- Sound based on strength ---
-        if (bounceVelocity < 12f)
+        // === CASE 2: Lizard falling onto Player ===
+        else if (lizardRb != null && lizardRb.linearVelocity.y < -minLizardBounceSpeed)
         {
-            //SoundManager.Instance.PlaySFX(smallBounceSound, smallBounceVolume);
-        }
-        else
-        {
-            //SoundManager.Instance.PlaySFX(largeBounceSound, bigBounceVolume);
-        }
+            float lizardFallSpeed = -lizardRb.linearVelocity.y;
 
+            // Make lizard bounce upward
+            lizardRb.linearVelocity = new Vector2(
+                lizardRb.linearVelocity.x,
+                lizardBounceUpForce
+            );
+
+            // Optional: Give player a small downward push
+            playerRb.AddForce(Vector2.down * 8f, ForceMode2D.Impulse);
+
+            Debug.Log("Lizard bounced off Player!");
+        }
+        // if (bounceVelocity < 12f)
+        // {
+        //     //SoundManager.Instance.PlaySFX(smallBounceSound, smallBounceVolume);
+        // }
+        // else
+        // {
+        //     //SoundManager.Instance.PlaySFX(largeBounceSound, bigBounceVolume);
+        // }
     }
 }
