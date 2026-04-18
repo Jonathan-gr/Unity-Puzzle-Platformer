@@ -34,8 +34,9 @@ public class BounceOffLizard : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Player"))
+        if (!collision.CompareTag("Player") || !collision.CompareTag("MoveableBox"))
             return;
+
 
         Rigidbody2D playerRb = collision.attachedRigidbody;
         if (playerRb == null)
