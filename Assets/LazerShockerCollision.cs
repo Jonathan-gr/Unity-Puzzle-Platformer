@@ -8,7 +8,9 @@ public class LazerCollision : MonoBehaviour
     [Header("Detection Settings")]
     public string lizardTag = "Lizard";
     public string gemTag = "Gem";
+    public string aarakocraTag = "Aarakocra";
     public string[] ignoreTags = { "Ladder", "SpaceShip" };
+    public float lazerShockerDamage = 0.1f;
     void Start()
     {
         // Automatically destroy after 3 seconds so you don't clutter the scene
@@ -40,6 +42,16 @@ public class LazerCollision : MonoBehaviour
                 gem.gemHitByLazer();
             }
 
+
+        }
+        else if (collision.CompareTag(aarakocraTag))
+        {
+            AarakocraHealthBar aarakocra = collision.GetComponentInParent<AarakocraHealthBar>();
+            if (aarakocra != null)
+            {
+                aarakocra.AarakocraHit(lazerShockerDamage);
+
+            }
 
         }
 

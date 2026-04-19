@@ -176,6 +176,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lizardTag: Lizard
+  gemTag: Gem
+  aarakocraTag: Aarakocra
   ignoreTags:
   - Ladder
   - GravityField
+  lazerShockerDamage: 0.05

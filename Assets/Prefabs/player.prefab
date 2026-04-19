@@ -238,6 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 6
   jumpForce: 8
+  gravityJumpDown: 4
   groundCheck: {fileID: 5537815834482672380}
   combinedGroundMask:
     serializedVersion: 2
@@ -347,6 +348,7 @@ MonoBehaviour:
   - MovingPlatform
   - MoveableBox
   - Lizard
+  - FallingTile
 --- !u!114 &5643405638023994024
 MonoBehaviour:
   m_ObjectHideFlags: 0

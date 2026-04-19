@@ -28,13 +28,14 @@ Transform:
   m_GameObject: {fileID: 252342893400415115}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 24.26, y: -10.18, z: -3.458972}
+  m_LocalPosition: {x: 24.253, y: -10.178, z: -3.458972}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6071221449991032701}
-  - {fileID: 1716019305044296876}
   - {fileID: 5708754209061236279}
+  - {fileID: 5666757844301632909}
+  - {fileID: 5554909663718910738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1103183727621561027
@@ -71,7 +72,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.000000014901161, y: -0.056221463}
+  m_Offset: {x: -0.000000014901161, y: -0.06033964}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -81,7 +82,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.19906965, y: 0.20755707}
+  m_Size: {x: 0.19906965, y: 0.17955333}
   m_EdgeRadius: 0
 --- !u!50 &6873067662492726340
 Rigidbody2D:
@@ -160,6 +161,105 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6431442491747174865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4917387513400999620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5666757844301632909}
+  - component: {fileID: 7297070954435950125}
+  - component: {fileID: 8629001134175059992}
+  m_Layer: 8
+  m_Name: HeadCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5666757844301632909
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387513400999620}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.01, y: 0.343, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6431442491747174865}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &7297070954435950125
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387513400999620}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.012310177, y: -0.30664903}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.16781491, y: 0.02838561}
+  m_EdgeRadius: 0
+--- !u!114 &8629001134175059992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387513400999620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f003444b913e33e4cb3f6df4be4085d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseBounce: 1
+  bounceMultiplier: 0.9
+  maxBounceVelocity: 25
+  minFallSpeed: 2
+  lizardPushDownForce: 18
+  minLizardPush: 8
+  LizardDiedPrefab: {fileID: 2754601109375500354, guid: ad69a576b8a9bc34b97d7370a44eeb3e, type: 3}
+  crushHeight: 23
 --- !u!1 &5455264252020318475
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +370,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &7715180885354434381
+--- !u!1 &7983304094126505964
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -278,63 +378,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1716019305044296876}
-  - component: {fileID: 1002312953626424254}
-  - component: {fileID: 684959114396711084}
+  - component: {fileID: 5554909663718910738}
+  - component: {fileID: 5514690365388234825}
+  - component: {fileID: 2763374564911367268}
   m_Layer: 8
-  m_Name: LizardBack
-  m_TagString: LizardBack
+  m_Name: FeetCollider
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1716019305044296876
+--- !u!4 &5554909663718910738
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7715180885354434381}
+  m_GameObject: {fileID: 7983304094126505964}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.012, y: 0.3, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.008000056, y: 0.32999992, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6431442491747174865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1002312953626424254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7715180885354434381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9743208ead6aed34e9ee5e92447b0ff6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseBounce: 1.5
-  bounceMultiplier: 0.9
-  maxBounceVelocity: 25
-  minFallSpeed: 2
-  lizardUpwardBonusFactor: 0.7
-  jumpedOnFirstLizard: 0
-  lizardJumpBonus: 0
-  crushHeight: 23
-  LizardDiedPrefab: {fileID: 2754601109375500354, guid: ad69a576b8a9bc34b97d7370a44eeb3e, type: 3}
-  smallBounceSound: {fileID: 0}
-  largeBounceSound: {fileID: 0}
-  smallBounceVolume: 0.07
-  bigBounceVolume: 0.1
---- !u!61 &684959114396711084
+--- !u!61 &5514690365388234825
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7715180885354434381}
+  m_GameObject: {fileID: 7983304094126505964}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -362,7 +437,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0033386871, y: -0.25996584}
+  m_Offset: {x: 0.0025428198, y: -0.48096454}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -372,5 +447,20 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.19205292, y: 0.018544555}
+  m_Size: {x: 0.15121299, y: 0.01728785}
   m_EdgeRadius: 0
+--- !u!114 &2763374564911367268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7983304094126505964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 309456eb18069504cb9c394739b54caa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lizardBounceUpForce: 10
+  minLizardBounceSpeed: 1
+  playerPushDownForce: 8
