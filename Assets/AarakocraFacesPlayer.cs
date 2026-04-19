@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossAI : MonoBehaviour
 {
@@ -6,15 +7,16 @@ public class BossAI : MonoBehaviour
     public Transform player;
     public bool shouldFacePlayer = true;
 
-    private SpriteRenderer spriteRenderer;
+    public Slider slider;
+
+    public Transform ParentvisualsContainer;
+    private Vector3 originalScale;
 
     void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Auto find player if not assigned
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        originalScale = ParentvisualsContainer.localScale;   // Save original scale
+
     }
 
     void Update()
@@ -27,16 +29,18 @@ public class BossAI : MonoBehaviour
 
     void FacePlayer()
     {
-        // Check if player is to the left or right of the boss
-        if (player.position.x > transform.position.x)
+        if (player.position.x < transform.position.x)
         {
-            // Player is on the LEFT → Face Left
-            spriteRenderer.flipX = true;
+            // Face Left
+
+            ParentvisualsContainer.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+            slider.direction = Slider.Direction.RightToLeft;
         }
         else
         {
-            // Player is on the RIGHT → Face Right
-            spriteRenderer.flipX = false;
+            // Face Right
+            ParentvisualsContainer.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
+            slider.direction = Slider.Direction.RightToLeft;
         }
     }
 }
