@@ -34,13 +34,13 @@ public class BossAI : MonoBehaviour
             // Face Left
 
             ParentvisualsContainer.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
-            slider.direction = Slider.Direction.RightToLeft;
+   
         }
         else
         {
             // Face Right
             ParentvisualsContainer.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
-            slider.direction = Slider.Direction.RightToLeft;
+  
         }
     }
 }

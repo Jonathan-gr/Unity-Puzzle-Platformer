@@ -46,9 +46,11 @@ public class LazerCollision : MonoBehaviour
         }
         else if (collision.CompareTag(aarakocraTag))
         {
-            AarakocraHealthBar aarakocra = collision.GetComponentInParent<AarakocraHealthBar>();
+
+            AarakocraHealthBar aarakocra = collision.GetComponentInChildren<AarakocraHealthBar>();
             if (aarakocra != null)
             {
+
                 aarakocra.AarakocraHit(lazerShockerDamage);
 
             }

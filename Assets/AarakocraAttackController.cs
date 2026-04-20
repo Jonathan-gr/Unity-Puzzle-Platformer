@@ -70,6 +70,7 @@ public class AarakocraAttackController : MonoBehaviour
 
     private void SpawnDamageArea2()
     {
+
         Transform spawnPoint = damageAreaSpawnPoint2 != null ? damageAreaSpawnPoint2 : transform;
 
         Instantiate(damageAreaPrefab, spawnPoint.position, spawnPoint.rotation);

@@ -11,6 +11,10 @@ public class PlayerDamagedFromAarcoka : MonoBehaviour
             Debug.Log("Player Hit2");
         }
     }
+    void Start()
+    {
+        Destroy(gameObject, 0.2f);
+    }
 
     // Update is called once per frame
 
