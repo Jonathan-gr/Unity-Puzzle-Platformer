@@ -10,12 +10,19 @@ public class AarakocraAttackController : MonoBehaviour
     public float attack1Duration = 2f;
     public float attack2Duration = 2.5f;
 
+    [Header("Attack Movement")]
+    public float attackMoveDistance = 1.5f;
+    public float attackMoveVariance = 0.5f;
+    public float attackMoveDuration = 0.3f;
+
     private bool isAttacking = false;
 
     public GameObject damageAreaPrefab;
 
     public Transform damageAreaSpawnPoint1;
     public Transform damageAreaSpawnPoint2;
+
+
 
     void Start()
     {
@@ -43,7 +50,7 @@ public class AarakocraAttackController : MonoBehaviour
     {
         isAttacking = true;
         animator.SetBool("isAttackOne", true);
-
+        StartCoroutine(MoveDuringAttack());
         yield return new WaitForSeconds(attack1Duration);
 
         animator.SetBool("isAttackOne", false);
@@ -54,7 +61,7 @@ public class AarakocraAttackController : MonoBehaviour
     {
         isAttacking = true;
         animator.SetBool("isAttackTwo", true);     // Make sure this parameter exists
-
+        StartCoroutine(MoveDuringAttack());
         yield return new WaitForSeconds(attack2Duration);
 
         animator.SetBool("isAttackTwo", false);
@@ -74,5 +81,26 @@ public class AarakocraAttackController : MonoBehaviour
         Transform spawnPoint = damageAreaSpawnPoint2 != null ? damageAreaSpawnPoint2 : transform;
 
         Instantiate(damageAreaPrefab, spawnPoint.position, spawnPoint.rotation);
+    }
+
+    IEnumerator MoveDuringAttack()
+    {
+        float direction = Mathf.Sign(transform.localScale.x);
+
+        float distance = attackMoveDistance + Random.Range(-attackMoveVariance, attackMoveVariance);
+
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = startPos + new Vector3(direction * distance, 0, 0);
+
+        float time = 0f;
+
+        while (time < attackMoveDuration)
+        {
+            transform.position = Vector3.Lerp(startPos, targetPos, time / attackMoveDuration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPos;
     }
 }

@@ -4,44 +4,49 @@ public class AarakocraMovement : MonoBehaviour
 {
     [Header("Chasing Settings")]
     public Transform player;
-    public float moveSpeed = 2f;
-    public float stopDistance = 3f; // Boss stops this far from player
+    public float moveSpeed = 3f;
+    public float stopDistance = 4f;        // Horizontal stop distance
+    public float hoverHeight = 3f;         // How high above player it should hover
 
     [Header("Hover Settings")]
     public bool enableHover = true;
-    public float hoverSpeed = 2f;   // How fast it bobs up/down
-    public float hoverAmount = 0.5f; // How high it bobs
+    public float hoverSpeed = 2f;
+    public float hoverAmount = 0.6f;
+    public float yUpdateInterval = 2f; // how often to adjust height
+    private float yTimer = 0f;
+    private float currentTargetY;
+
+
 
     private float startY;
 
     void Start()
     {
-        // Save the starting Y position for the hover effect
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
         startY = transform.position.y;
+        currentTargetY = transform.position.y;
     }
+
 
     void Update()
     {
-        if (player != null)
-        {
-            HandleMovement();
-        }
+        if (player == null) return;
 
-        if (enableHover)
-        {
-            ApplyHover();
-        }
+        HandleMovement();
+        ApplyHover();
+
     }
 
     void HandleMovement()
     {
-        // 1. Calculate distance to player
-        float distance = Vector2.Distance(transform.position, player.position);
+        // Calculate horizontal distance only
+        float distanceX = Mathf.Abs(transform.position.x - player.position.x);
 
-        // 2. Move towards player only if further than stopDistance
-        if (distance > stopDistance)
+        if (distanceX > stopDistance)
         {
-            // Move only on the X axis to keep it from "diving" into the ground
+            // Move horizontally toward player
             Vector2 targetPos = new Vector2(player.position.x, transform.position.y);
             transform.position = Vector2.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
         }
@@ -49,8 +54,28 @@ public class AarakocraMovement : MonoBehaviour
 
     void ApplyHover()
     {
-        // Use Sin wave to calculate a smooth up/down offset
-        float newY = startY + Mathf.Sin(Time.time * hoverSpeed) * hoverAmount;
-        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+        if (!enableHover) return;
+
+        // Update target Y only every X seconds
+        yTimer += Time.deltaTime;
+
+        if (yTimer >= yUpdateInterval)
+        {
+            currentTargetY = player.position.y + hoverHeight;
+            yTimer = 0f;
+        }
+
+        // Add sine hover
+        float hoverOffset = Mathf.Sin(Time.time * hoverSpeed) * hoverAmount;
+
+        float newY = currentTargetY + hoverOffset;
+
+        transform.position = new Vector3(
+            transform.position.x,
+            Mathf.Lerp(transform.position.y, newY, Time.deltaTime * 4f),
+            transform.position.z
+        );
     }
+
+
 }
