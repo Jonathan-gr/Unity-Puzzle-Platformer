@@ -4,9 +4,9 @@ public class AarakocraMovement : MonoBehaviour
 {
     [Header("Chasing Settings")]
     public Transform player;
-    public float moveSpeed = 3f;
-    public float stopDistance = 4f;        // Horizontal stop distance
-    public float hoverHeight = 3f;         // How high above player it should hover
+    public float moveSpeed = 2f;
+    public float stopDistance = 2f;        // Horizontal stop distance
+    public float hoverHeight = 2f;         // How high above player it should hover
 
     [Header("Hover Settings")]
     public bool enableHover = true;
@@ -43,11 +43,11 @@ public class AarakocraMovement : MonoBehaviour
     {
         // Calculate horizontal distance only
         float distanceX = Mathf.Abs(transform.position.x - player.position.x);
-
         if (distanceX > stopDistance)
         {
             // Move horizontally toward player
             Vector2 targetPos = new Vector2(player.position.x, transform.position.y);
+
             transform.position = Vector2.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
         }
     }
@@ -61,6 +61,7 @@ public class AarakocraMovement : MonoBehaviour
 
         if (yTimer >= yUpdateInterval)
         {
+
             currentTargetY = player.position.y + hoverHeight;
             yTimer = 0f;
         }

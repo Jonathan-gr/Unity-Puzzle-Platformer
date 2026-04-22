@@ -10,26 +10,30 @@ public class PlayerDamagedFromAarcoka : MonoBehaviour
         if (!collision.CompareTag("Player"))
             return;
 
-        Debug.Log("Player Hit");
+        // 1. Get the PlayerMovement script instead of just the Rigidbody
+        PlayerMovement playerMove = collision.GetComponent<PlayerMovement>();
 
-        Rigidbody2D playerRb = collision.attachedRigidbody;
-        if (playerRb == null) return;
+        if (playerMove != null)
+        {
+            Debug.Log("Player Hit - Calling Knockback Routine");
 
-        //  Direction from attack → player
-        Vector2 direction = (collision.transform.position - transform.position).normalized;
+            // 2. Calculate the direction from the attack to the player
+            Vector2 direction = (collision.transform.position - transform.root.position).normalized;
 
-        // 👉Optional: flatten vertical so it doesn't get weird
-        direction.y = 0;
+            // Force horizontal direction only
+            direction.y = 0;
+            direction.Normalize();
 
-        // 👉 Apply knockback
-        Vector2 force = direction * knockbackForce + Vector2.up * upwardForce;
+            Vector2 force = direction * knockbackForce + Vector2.up * upwardForce;
+            Debug.DrawLine(transform.root.position, collision.transform.position, Color.red, 1f);
 
-        playerRb.linearVelocity = Vector2.zero; // optional: reset before applying
-        playerRb.AddForce(force, ForceMode2D.Impulse);
+            // 4. Call the specific function that handles 'canMove = false'
+            playerMove.GetKnockedBack(force);
+        }
     }
 
     void Start()
     {
-        Destroy(gameObject, 0.2f);
+        Destroy(gameObject, 0.05f);
     }
 }

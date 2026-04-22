@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour, IMoveable
@@ -18,6 +19,7 @@ public class PlayerMovement : MonoBehaviour, IMoveable
     private float horizontalInput;
     public bool isGrounded;
     private bool shouldJump;
+    private bool canMove = true;
 
     private Animator animator;
 
@@ -73,6 +75,7 @@ public class PlayerMovement : MonoBehaviour, IMoveable
 
     private void FixedUpdate()
     {
+        if (!canMove) return;
         isGrounded = CheckIsGrounded();
 
         // 4. Horizontal Movement
@@ -120,5 +123,22 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         float visualYVelocity = isUpsideDown ? -rb.linearVelocity.y : rb.linearVelocity.y;
 
         animator.SetFloat("yVelocity", visualYVelocity);
+    }
+
+    public void GetKnockedBack(Vector2 force)
+    {
+        StartCoroutine(KnockbackRoutine(force));
+    }
+
+    private IEnumerator KnockbackRoutine(Vector2 force)
+    {
+        canMove = false; // Stop the movement script from overwriting velocity
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(force, ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(0.2f); // Duration of the stun
+        canMove = true;
     }
 }

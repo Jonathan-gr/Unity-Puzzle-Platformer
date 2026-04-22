@@ -1,3 +1,4 @@
+using System.Collections; // Needed for Coroutines
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,72 +9,96 @@ public class ButtonCollision : MonoBehaviour
     [Header("Listeners")]
     public MonoBehaviour[] listeners;
 
+    [Header("Timer Settings")]
+    public float bulletPressDuration = 2f; // How long to stay pressed
+    private Coroutine timerCoroutine;
+
     private HashSet<GameObject> pressers = new HashSet<GameObject>();
+    public List<string> targetTags = new List<string> { "Player", "Lizard", "MoveableBox", "LazerBullet" };
 
     void Start()
     {
-        if (!animator)
-            animator = GetComponent<Animator>();
+        if (!animator) animator = GetComponent<Animator>();
     }
 
-    //on collision
+    // --- 1. HANDLE TRIGGERS (Bullets) ---
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("LazerBullet"))
+        {
+            StartPressTimer();
+        }
+    }
 
+    private void StartPressTimer()
+    {
+        // If the button is already counting down, stop it and restart
+        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+
+        timerCoroutine = StartCoroutine(ButtonTimerRoutine());
+    }
+
+    private IEnumerator ButtonTimerRoutine()
+    {
+        // Force the button down
+        SetButtonState(true);
+
+        yield return new WaitForSeconds(bulletPressDuration);
+
+        // Only release if no physical objects (Player/Box) are still standing on it
+        if (pressers.Count == 0)
+        {
+            SetButtonState(false);
+        }
+
+        timerCoroutine = null;
+    }
+
+    // --- 2. HANDLE PHYSICAL COLLISIONS (Player/Box) ---
     void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!IsValidPresser(collision.gameObject)) return;
 
-        if (!IsValidPresser(collision.gameObject))
-            return;
-
-        // Add returns false if already present
-        bool wasAdded = pressers.Add(collision.gameObject);
-
-        if (wasAdded && pressers.Count == 1)
+        if (pressers.Add(collision.gameObject) && pressers.Count == 1)
         {
-            animator.SetBool("ButtonPushedDown", true);
-            NotifyPressed();
-
-
-
+            // If a timer was running, stop it so the physical object takes control
+            if (timerCoroutine != null) { StopCoroutine(timerCoroutine); timerCoroutine = null; }
+            SetButtonState(true);
         }
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (!IsValidPresser(collision.gameObject))
-            return;
+        if (!IsValidPresser(collision.gameObject)) return;
 
-        bool wasRemoved = pressers.Remove(collision.gameObject);
-
-        if (wasRemoved && pressers.Count == 0)
+        if (pressers.Remove(collision.gameObject) && pressers.Count == 0)
         {
-            animator.SetBool("ButtonPushedDown", false);
-            NotifyReleased();
+            SetButtonState(false);
         }
+    }
+
+    // --- 3. HELPER METHODS ---
+    void SetButtonState(bool isDown)
+    {
+        animator.SetBool("ButtonPushedDown", isDown);
+        if (isDown) NotifyPressed();
+        else NotifyReleased();
     }
 
     bool IsValidPresser(GameObject obj)
     {
-        return obj.CompareTag("Player") || obj.CompareTag("Lizard") || obj.CompareTag("MoveableBox");
+        return targetTags.Contains(obj.tag);
     }
 
     void NotifyPressed()
     {
         foreach (var mb in listeners)
-        {
-
-            if (mb is IButtonListener listener)
-
-                listener.OnButtonPressed();
-
-        }
+            if (mb is IButtonListener listener) listener.OnButtonPressed();
     }
 
     void NotifyReleased()
     {
         foreach (var mb in listeners)
-        {
-            if (mb is IButtonListener listener)
-                listener.OnButtonReleased();
-        }
+            if (mb is IButtonListener listener) listener.OnButtonReleased();
     }
 }

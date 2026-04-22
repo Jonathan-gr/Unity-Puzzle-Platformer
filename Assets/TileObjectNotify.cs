@@ -8,6 +8,9 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
     private int currentIndex = 0;
     private bool resetNeeded = false;
     private int resetIndex;
+    public bool resetTiles = false;
+
+    public float newTileGravityScale = 10;
 
     // Store original state for each tile
     private List<Vector3> originalPositions = new List<Vector3>();
@@ -58,6 +61,7 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
             if (tile == null || rb == null) return;
 
             rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = newTileGravityScale;
 
             Debug.Log($"Tile {currentIndex} → FALLING");
 
@@ -86,6 +90,9 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
 
     private void ResetTile(int index)
     {
+
+        if (!resetTiles)
+            return;
 
         Debug.Log("reset here");
         Rigidbody2D rb = tileRigidbodies[index];

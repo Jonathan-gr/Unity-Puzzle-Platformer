@@ -1,27 +1,32 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BossAI : MonoBehaviour
+public class AarakocraFacesPlayer : MonoBehaviour
 {
     [Header("Face Player Settings")]
     public Transform player;
     public bool shouldFacePlayer = true;
 
-    public Slider slider;
+
 
     public Transform ParentvisualsContainer;
-    private Vector3 originalScale;
+
+    private SpriteRenderer sr;
 
     void Awake()
     {
+        // Get the SpriteRenderer from the visuals object
+        sr = GetComponent<SpriteRenderer>();
 
-        originalScale = ParentvisualsContainer.localScale;   // Save original scale
-
+        if (sr == null)
+        {
+            Debug.LogError("No SpriteRenderer found on ParentvisualsContainer!");
+        }
     }
 
     void Update()
     {
-        if (shouldFacePlayer && player != null)
+        if (shouldFacePlayer)
         {
             FacePlayer();
         }
@@ -29,18 +34,7 @@ public class BossAI : MonoBehaviour
 
     void FacePlayer()
     {
-        if (player.position.x < transform.position.x)
-        {
-            // Face Left
-
-            ParentvisualsContainer.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
-
-        }
-        else
-        {
-            // Face Right
-            ParentvisualsContainer.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
-
-        }
+        // Flip sprite based on player position
+        sr.flipX = player.position.x < transform.position.x;
     }
 }

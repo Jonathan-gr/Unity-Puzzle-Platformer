@@ -7,17 +7,18 @@ public class MovableBoxFalling : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private int groundLayer;
 
     public GameObject LizardDiedPrefab;
     private float originalGravity;
     public float killVelocityThreshold = 5.0f; // How fast must it fall to kill?
 
+    public float fallOnAarkocraDamage = 0.5f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         originalGravity = rb.gravityScale;
-        groundLayer = LayerMask.NameToLayer("Ground");
+
     }
 
 
@@ -89,7 +90,34 @@ public class MovableBoxFalling : MonoBehaviour
     }
 
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Aarakocra"))
+        {
+            // 1. Get the Rigidbody of the Tile (this object)
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
+            // 2. Check if the tile is moving downward (y velocity < -0.1)
+            // We use a small threshold like -1.0f to ensure it's actually "falling"
+            if (rb != null && rb.linearVelocity.y < -1.0f)
+            {
+                AarakocraHealthBar aarakocra = collision.GetComponentInChildren<AarakocraHealthBar>();
 
+                if (aarakocra != null)
+                {
+                    aarakocra.AarakocraHit(fallOnAarkocraDamage);
+
+                    // Optional: Debug to confirm the "falling" hit
+                    Debug.Log("Falling hit detected! Speed: " + rb.linearVelocity.y);
+                }
+            }
+        }
+    }
 
 }
+
+
+
+
+
+
