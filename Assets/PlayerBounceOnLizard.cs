@@ -19,12 +19,12 @@ public class PlayerBounceOnLizard : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        Debug.Log("1");
+
         if (!collision.CompareTag("Player")) return;
 
         Rigidbody2D playerRb = collision.attachedRigidbody;
         if (playerRb == null) return;
-        Debug.Log("2");
+
         Rigidbody2D lizardRb = GetComponentInParent<Rigidbody2D>();
 
         float fallSpeed = -playerRb.linearVelocity.y;
