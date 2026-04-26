@@ -62,6 +62,7 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
 
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = newTileGravityScale;
+            rb.mass = 5f;
 
             Debug.Log($"Tile {currentIndex} → FALLING");
 
