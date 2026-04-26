@@ -74,3 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4aa36d157b45b34da5e7b3b882661da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxGems: 3
+  currentGems: 0
+  gemPrefab: {fileID: 6433365087428568835, guid: 3c2c46f91d886914dadf74ce0cefe733, type: 3}
+  gemContainer: {fileID: 0}

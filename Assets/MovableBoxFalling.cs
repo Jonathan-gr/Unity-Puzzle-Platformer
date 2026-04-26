@@ -40,6 +40,7 @@ public class MovableBoxFalling : MonoBehaviour
         {
             // 3. Check the impact speed (How hard did they hit?)
             // relativeVelocity.y tells us the vertical speed difference
+            Debug.Log(Mathf.Abs(collision.relativeVelocity.y));
             if (Mathf.Abs(collision.relativeVelocity.y) > killVelocityThreshold)
             {
                 if (collision.gameObject.TryGetComponent(out LizardMovement lizard))

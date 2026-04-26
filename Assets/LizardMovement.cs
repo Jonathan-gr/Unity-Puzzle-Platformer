@@ -8,7 +8,6 @@ public class LizardMovement : MonoBehaviour, IMoveable
 
     private Rigidbody2D rb;
     private int direction = 1;
-    private SpriteRenderer spriteRenderer;
 
     private bool canMove = true;
     private Animator animator;
@@ -30,7 +29,7 @@ public class LizardMovement : MonoBehaviour, IMoveable
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+
 
         animator = transform.Find("Visual").GetComponent<Animator>();
         if (animator == null)

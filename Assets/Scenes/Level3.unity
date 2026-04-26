@@ -754,6 +754,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8113892466854157842, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
   m_PrefabInstance: {fileID: 235274554}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &235274558 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4696749013530089737, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
+  m_PrefabInstance: {fileID: 235274554}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &290134046 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2223808504631634370, guid: 2e288b68a106f0d4f85ab4e7e5de5f0d, type: 3}
@@ -981,6 +986,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameListener
       objectReference: {fileID: 0}
+    - target: {fileID: 7128189217507243390, guid: bcaff4dbbeb527f47abe96dc8d9c508f, type: 3}
+      propertyPath: gemContainer
+      value: 
+      objectReference: {fileID: 235274558}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1023,7 +1032,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8834638131792273537, guid: 05f838abc89f2234bbeb3cf637ddc15c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.08
+      value: 9.82
       objectReference: {fileID: 0}
     - target: {fileID: 8834638131792273537, guid: 05f838abc89f2234bbeb3cf637ddc15c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9453,11 +9462,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4555298017542906711, guid: afd0b96ee650f394bbd0dd88dda29ea5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.69
+      value: 31.72
       objectReference: {fileID: 0}
     - target: {fileID: 4555298017542906711, guid: afd0b96ee650f394bbd0dd88dda29ea5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.17
+      value: -8.89
       objectReference: {fileID: 0}
     - target: {fileID: 4555298017542906711, guid: afd0b96ee650f394bbd0dd88dda29ea5, type: 3}
       propertyPath: m_LocalPosition.z
