@@ -39,6 +39,7 @@ public class ConsoleInteractable : MonoBehaviour
     private string currentMessage = "";
 
     public GameObject ladderPrefab;
+    public string secretLadderMessage = "";
 
     public void Start()
     {
@@ -47,9 +48,13 @@ public class ConsoleInteractable : MonoBehaviour
 
     private int currentIndex = -1;
     private bool playerInRange = false;
+    public bool secretLadder = false;
 
     void Update()
     {
+        
+        if (secretLadder)
+            this.enabled = false; 
 
 
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
@@ -73,10 +78,16 @@ public class ConsoleInteractable : MonoBehaviour
         if (playerInRange && Input.GetKeyDown(KeyCode.R))
         {
 
+            if(firstMessage)
+                return;
+
             if (currentIndex == messages.Length - 1 && consoleText.lineSpacing < -40 && consoleText.lineSpacing > -55)
             {
                 Vector3 offset = new Vector3(-1f, 4.5f, 0f);
                 Instantiate(ladderPrefab, transform.position + offset, Quaternion.identity);
+                consoleText.text = secretLadderMessage;
+                secretLadder = true;
+
             }
             else
             {
@@ -84,11 +95,8 @@ public class ConsoleInteractable : MonoBehaviour
                 consoleText.lineSpacing = 0;
                 currentIndex = 0;
                 consoleText.text = messages[currentIndex];
-                Destroy(ladderPrefab);
-            }
 
-
-            Debug.Log("init collision with object");
+            }          
 
         }
 
@@ -100,6 +108,7 @@ public class ConsoleInteractable : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        if(secretLadder) return;
 
         playerInRange = true;
         textCanvas.SetActive(true);
@@ -123,6 +132,7 @@ public class ConsoleInteractable : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        if(secretLadder) return;
 
         playerInRange = false;
 
