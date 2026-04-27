@@ -1,0 +1,73 @@
+using System;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ConsoleRoomInteractable : MonoBehaviour
+{
+    [Header("Interaction")]
+
+    [Header("UI")]
+    public TextMeshProUGUI consoleText;
+    public GameObject textCanvas;
+
+    public GameObject WordPrefab;
+    public string startingMessage = "Press E to interact";
+
+    public bool playerInRange = false;
+
+    [Header("Configure the spawned object")]
+    public bool moveUp = true;
+    public bool moveLeft = false;
+    public bool moveRight = false;
+    public float upSpeed = 2f;
+    public float horizontalSpeed = 2f;
+
+    public float initPrefabXOffset = 0f;
+    public float initPrefabYOffset = 2f;
+
+    [Header("Lifetime")]
+    public float destroyAfterSeconds = 3f;
+
+    public void Start()
+    {
+        consoleText.text = startingMessage;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E) && playerInRange)
+        {
+            Vector3 offset = new Vector3(initPrefabXOffset, initPrefabYOffset, 0f);
+            GameObject spawned = Instantiate(WordPrefab, transform.position + offset, Quaternion.identity);
+
+            ConsolePrefabManager movement = spawned.GetComponent<ConsolePrefabManager>();
+            if (movement != null)
+            {
+                movement.moveUp = moveUp;
+                movement.moveLeft = moveLeft;
+                movement.moveRight = moveRight;
+                movement.upSpeed = upSpeed;
+                movement.horizontalSpeed = horizontalSpeed;
+            }
+
+            // Destroy the spawned instance after X seconds
+            Destroy(spawned, destroyAfterSeconds);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.CompareTag("Player")) return;
+        playerInRange = true;
+        textCanvas.SetActive(true);
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (!other.CompareTag("Player")) return;
+        playerInRange = false;
+        textCanvas.SetActive(false);
+    }
+}

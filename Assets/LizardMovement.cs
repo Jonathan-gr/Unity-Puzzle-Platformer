@@ -3,14 +3,15 @@ using UnityEngine;
 public class LizardMovement : MonoBehaviour, IMoveable
 {
     public float moveSpeed = 2f;
-    public LayerMask groundLayer;
-    public Transform wallCheck;
+
+
+    public Transform visual;
 
     private Rigidbody2D rb;
     private int direction = 1;
 
     private bool canMove = true;
-    private Animator animator;
+    public Animator animator;
     public bool isShocked = false;
 
     private float lastX;
@@ -29,11 +30,6 @@ public class LizardMovement : MonoBehaviour, IMoveable
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-
-
-        animator = transform.Find("Visual").GetComponent<Animator>();
-        if (animator == null)
-            Debug.LogError("Animator not found on Visual child!", this);
 
         lastX = rb.position.x;
     }
@@ -77,12 +73,10 @@ public class LizardMovement : MonoBehaviour, IMoveable
 
     void UpdateVisualOrientation()
     {
-        // Find the rotating visual object
-        Transform visual = transform.Find("Visual");     // Change to "Body" if you used that name
 
         if (visual == null)
         {
-            Debug.LogWarning("Visual child not found on Lizard!", this);
+            Debug.Log(visual);
             return;
         }
 
@@ -108,10 +102,9 @@ public class LizardMovement : MonoBehaviour, IMoveable
     void Flip()
     {
         direction *= -1;
-        // We no longer flip scale here because UpdateVisualOrientation handles it every frame
     }
 
-    // ... (Keep your LizardHit and OnCollisionStay2D logic exactly the same) ...
+
 
     public void LizardHit()
     {

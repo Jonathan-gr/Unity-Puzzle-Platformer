@@ -100,7 +100,7 @@ public class ConsoleInteractable : MonoBehaviour
 
         }
 
-
+        
         // Optional: hide text when player walks away
         if (!playerInRange && firstMessage)
             textCanvas.SetActive(false);
