@@ -12,7 +12,16 @@ public class ConsoleRoomInteractable : MonoBehaviour
     public TextMeshProUGUI consoleText;
     public GameObject textCanvas;
 
-    public GameObject WordPrefab;
+    public GameObject wordPrefab;
+
+    [Header("Sprite & Collider")]
+
+    public Sprite wordSprite;
+
+    public Vector2 colliderSize = new Vector2(1f, 1f);
+    public Vector2 colliderOffset = new Vector2(0f, 0f);
+
+
     public string startingMessage = "Press E to interact";
 
     public bool playerInRange = false;
@@ -40,7 +49,7 @@ public class ConsoleRoomInteractable : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && playerInRange)
         {
             Vector3 offset = new Vector3(initPrefabXOffset, initPrefabYOffset, 0f);
-            GameObject spawned = Instantiate(WordPrefab, transform.position + offset, Quaternion.identity);
+            GameObject spawned = Instantiate(wordPrefab, transform.position + offset, Quaternion.identity);
 
             ConsolePrefabManager movement = spawned.GetComponent<ConsolePrefabManager>();
             if (movement != null)
@@ -50,6 +59,18 @@ public class ConsoleRoomInteractable : MonoBehaviour
                 movement.moveRight = moveRight;
                 movement.upSpeed = upSpeed;
                 movement.horizontalSpeed = horizontalSpeed;
+            }
+            // Sprite
+            SpriteRenderer sr = spawned.GetComponent<SpriteRenderer>();
+            if (sr != null && wordSprite != null)
+                sr.sprite = wordSprite;
+
+            // Collider
+            BoxCollider2D col = spawned.GetComponent<BoxCollider2D>();
+            if (col != null)
+            {
+                col.size = colliderSize;
+                col.offset = colliderOffset;
             }
 
             // Destroy the spawned instance after X seconds

@@ -11,7 +11,7 @@ public class ConsolePrefabManager : MonoBehaviour
     public float upSpeed = 2f;
     public float horizontalSpeed = 2f;
 
-    public float timeToEnd = 3f;
+
 
 
     void Update()
