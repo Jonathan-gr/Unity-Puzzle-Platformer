@@ -14,12 +14,6 @@ public class ConsoleRoomInteractable : MonoBehaviour
 
     public GameObject wordPrefab;
 
-    [Header("Sprite & Collider")]
-
-    public Sprite wordSprite;
-
-    public Vector2 colliderSize = new Vector2(1f, 1f);
-    public Vector2 colliderOffset = new Vector2(0f, 0f);
 
 
     public string startingMessage = "Press E to interact";
@@ -32,9 +26,20 @@ public class ConsoleRoomInteractable : MonoBehaviour
     public bool moveRight = false;
     public float upSpeed = 2f;
     public float horizontalSpeed = 2f;
-
     public float initPrefabXOffset = 0f;
     public float initPrefabYOffset = 2f;
+
+
+    [Header("Sprite & Collider")]
+
+    public Sprite wordSprite;
+
+    public Vector2 colliderSize = new Vector2(1f, 1f);
+    public Vector2 colliderOffset = new Vector2(0f, 0f);
+
+    private Vector3 wordScale;
+    public float xScaleOfPrefab = 1f;
+    public float ySacaleOfPrefab = 1f;
 
     [Header("Lifetime")]
     public float destroyAfterSeconds = 3f;
@@ -72,6 +77,8 @@ public class ConsoleRoomInteractable : MonoBehaviour
                 col.size = colliderSize;
                 col.offset = colliderOffset;
             }
+            wordScale = new Vector3(xScaleOfPrefab, ySacaleOfPrefab, 1f);
+            spawned.transform.localScale = wordScale;
 
             // Destroy the spawned instance after X seconds
             Destroy(spawned, destroyAfterSeconds);
