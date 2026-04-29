@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ConsoleCreatesExplostion : MonoBehaviour
@@ -10,16 +11,28 @@ public class ConsoleCreatesExplostion : MonoBehaviour
     public float initPrefabYOffset = 2f;
     public float timeToDestroy = 1f;
 
+    public float delayTime = 2f;
+
 
     // Update is called once per frame
     void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.F))
         {
-            Vector3 offset = new Vector3(initPrefabXOffset, initPrefabYOffset, 0f);
-            GameObject explostion = Instantiate(ExplosionPrefab, transform.position + offset, Quaternion.identity);
-            Destroy(explostion, timeToDestroy);
+            // Start the timer
+            StartCoroutine(ExecuteAfterTime(delayTime));
         }
+    }
+
+    IEnumerator ExecuteAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+
+        Vector3 offset = new Vector3(initPrefabXOffset, initPrefabYOffset, 0f);
+        GameObject explosion = Instantiate(ExplosionPrefab, transform.position + offset, Quaternion.identity);
+        Destroy(explosion, timeToDestroy);
+
     }
 
     void OnTriggerEnter2D(Collider2D other)

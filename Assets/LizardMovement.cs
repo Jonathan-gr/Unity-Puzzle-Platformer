@@ -138,7 +138,9 @@ public class LizardMovement : MonoBehaviour, IMoveable
         isKnockedBack = true;
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-        rb.linearVelocity = Vector2.zero;
+        // Instead of zeroing velocity, cancel only downward momentum
+        if (rb.linearVelocity.y < 0)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         rb.AddForce(force, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(stunDuration); // Duration of the stun

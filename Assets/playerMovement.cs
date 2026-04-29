@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour, IMoveable
     public bool isGrounded;
     private bool shouldJump;
     private bool canMove = true;
+    public float airFriction = 2;
 
     private Animator animator;
 
@@ -79,7 +80,14 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         isGrounded = CheckIsGrounded();
 
         // 4. Horizontal Movement
-        rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
+        float currentSpeed = moveSpeed;
+
+        if (!isGrounded)
+        {
+            // Apply friction to the temporary speed, not the permanent one
+            currentSpeed /= airFriction;
+        }
+        rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
 
         // --- FIX 2: JUMP DIRECTION ---
         if (shouldJump)
@@ -135,7 +143,9 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         canMove = false; // Stop the movement script from overwriting velocity
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
-        rb.linearVelocity = Vector2.zero;
+        // Instead of zeroing velocity, cancel only downward momentum
+        if (rb.linearVelocity.y < 0)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         rb.AddForce(force, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(stunDuration); // Duration of the stun
