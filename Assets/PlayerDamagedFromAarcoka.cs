@@ -4,6 +4,7 @@ public class PlayerDamagedFromAarcoka : MonoBehaviour
 {
     public float knockbackForce = 8f;
     public float upwardForce = 2f;
+    public float stunDuration = 0.2f;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -28,7 +29,7 @@ public class PlayerDamagedFromAarcoka : MonoBehaviour
             Debug.DrawLine(transform.root.position, collision.transform.position, Color.red, 1f);
 
             // 4. Call the specific function that handles 'canMove = false'
-            playerMove.GetKnockedBack(force);
+            playerMove.GetKnockedBack(force, stunDuration);
         }
     }
 

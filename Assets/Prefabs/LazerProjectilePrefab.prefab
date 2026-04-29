@@ -181,4 +181,5 @@ MonoBehaviour:
   ignoreTags:
   - Ladder
   - GravityField
+  - Console
   lazerShockerDamage: 0.1

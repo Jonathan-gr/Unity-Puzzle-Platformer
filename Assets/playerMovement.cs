@@ -125,12 +125,12 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         animator.SetFloat("yVelocity", visualYVelocity);
     }
 
-    public void GetKnockedBack(Vector2 force)
+    public void GetKnockedBack(Vector2 force, float stunDuration)
     {
-        StartCoroutine(KnockbackRoutine(force));
+        StartCoroutine(KnockbackRoutine(force, stunDuration));
     }
 
-    private IEnumerator KnockbackRoutine(Vector2 force)
+    private IEnumerator KnockbackRoutine(Vector2 force, float stunDuration)
     {
         canMove = false; // Stop the movement script from overwriting velocity
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -138,7 +138,7 @@ public class PlayerMovement : MonoBehaviour, IMoveable
         rb.linearVelocity = Vector2.zero;
         rb.AddForce(force, ForceMode2D.Impulse);
 
-        yield return new WaitForSeconds(0.2f); // Duration of the stun
+        yield return new WaitForSeconds(stunDuration); // Duration of the stun
         canMove = true;
     }
 }

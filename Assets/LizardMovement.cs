@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LizardMovement : MonoBehaviour, IMoveable
@@ -11,6 +13,7 @@ public class LizardMovement : MonoBehaviour, IMoveable
     private int direction = 1;
 
     private bool canMove = true;
+    private bool isStunnedFromGun = false;
     public Animator animator;
     public bool isShocked = false;
 
@@ -27,6 +30,8 @@ public class LizardMovement : MonoBehaviour, IMoveable
         set => moveSpeed = value;
     }
 
+    private bool isKnockedBack = false;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -36,9 +41,16 @@ public class LizardMovement : MonoBehaviour, IMoveable
 
     void FixedUpdate()
     {
+        if (isStunnedFromGun)
+        {
+            rb.linearVelocity = Vector2.zero; // gun stun: fully freeze
+            return;
+        }
         if (!canMove)
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            if (!isKnockedBack) // only zero velocity if it's NOT a knockback
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+
             lastX = rb.position.x;
             stuckTimer = 0f;
             return;
@@ -104,17 +116,33 @@ public class LizardMovement : MonoBehaviour, IMoveable
         direction *= -1;
     }
 
-
-
     public void LizardHit()
     {
-        canMove = !canMove;
+        isStunnedFromGun = !isStunnedFromGun;
         isShocked = !isShocked;
         animator.SetBool("isShocked", isShocked);
 
-        if (!canMove)
+        if (!isStunnedFromGun)
         {
             rb.linearVelocity = Vector2.zero;
         }
+    }
+    public void GetKnockedBack(Vector2 force, float stunDuration)
+    {
+        StartCoroutine(KnockbackRoutine(force, stunDuration));
+    }
+
+    private IEnumerator KnockbackRoutine(Vector2 force, float stunDuration)
+    {
+        canMove = false; // Stop the movement script from overwriting velocity
+        isKnockedBack = true;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(force, ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(stunDuration); // Duration of the stun
+        canMove = true;
+        isKnockedBack = false;
     }
 }

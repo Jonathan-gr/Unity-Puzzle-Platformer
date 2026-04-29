@@ -15,6 +15,7 @@ TagManager:
   - MovingPlatform
   - Gem
   - Aarakocra
+  - Console
   layers:
   - Default
   - TransparentFX
