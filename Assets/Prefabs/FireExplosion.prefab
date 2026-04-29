@@ -123,11 +123,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61b2e269f7cc1dd4693f75bc2e9b3807, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionRadius: 8.2
+  explosionRadius: 5
   explosionForce: 15
-  upwardModifier: 1
   stunDuration: 0.5
   allowedTags:
   - Player
   - MovableBox
   - Lizard
+  horizontalPowerScale: 1
+  verticalPowerScale: 0.6
+  baseUpwardForce: 1.2
