@@ -132,4 +132,4 @@ MonoBehaviour:
   - Lizard
   horizontalPowerScale: 1
   verticalPowerScale: 0.6
-  baseUpwardForce: 1.2
+  baseUpwardForce: 1.4

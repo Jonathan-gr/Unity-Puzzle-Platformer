@@ -8232,6 +8232,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6507293983852899366, guid: fdcedc90b086a564587d3fc2a8203249, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7328749018096838662, guid: fdcedc90b086a564587d3fc2a8203249, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7913664635152003715, guid: fdcedc90b086a564587d3fc2a8203249, type: 3}
       propertyPath: m_Name
       value: MovingWallContainerHor
