@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 539e9db11245a054fa51c91589be7ac2
+  - enabled: 1
+    path: Assets/Scenes/Multiple consoles.unity
+    guid: 720fe375d26ff014484ef96aed605653
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

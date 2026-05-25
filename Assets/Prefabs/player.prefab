@@ -245,7 +245,7 @@ MonoBehaviour:
     m_Bits: 3136
   groundCheckRadius: 0.2
   isGrounded: 0
-  airFriction: 1.5
+  airFriction: 1.2
   boxSize: {x: 0.5, y: 0.1}
   castDistance: 0.1
   jumpSound: {fileID: 8300000, guid: 425839be0d3271248b9eae6a796a169a, type: 3}
