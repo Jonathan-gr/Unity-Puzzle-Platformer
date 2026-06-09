@@ -59,9 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1a98c0bf4e78548b722e90b15c4859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseUI: {fileID: 0}
-  winUI: {fileID: 0}
-  loseUI: {fileID: 0}
+  pauseUI: {fileID: 4698822407109053530, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
+  winUI: {fileID: 4698822407109053530, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
+  loseUI: {fileID: 4698822407109053530, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
 --- !u!114 &7128189217507243390
 MonoBehaviour:
   m_ObjectHideFlags: 0

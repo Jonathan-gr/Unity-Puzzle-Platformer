@@ -19,8 +19,14 @@ public class LizardBounceOnPlayer : MonoBehaviour
         if (lizardRb == null) return;
 
         // Only trigger if lizard is falling fast enough
-        if (lizardRb.linearVelocity.y > -minLizardBounceSpeed)
+        Debug.Log(Mathf.Abs(lizardRb.linearVelocity.y));
+        Debug.Log(minLizardBounceSpeed);
+        if (Mathf.Abs(lizardRb.linearVelocity.y) < minLizardBounceSpeed)
+        {
+            Debug.Log("return");
             return;
+        }
+
 
         // Make lizard bounce upward
         lizardRb.linearVelocity = new Vector2(

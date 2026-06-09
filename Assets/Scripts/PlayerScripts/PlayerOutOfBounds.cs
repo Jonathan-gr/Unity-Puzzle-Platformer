@@ -19,7 +19,7 @@ public class PlayerOutOfBounds : MonoBehaviour
     {
         if (transform.position.y < minY || transform.position.y > maxY || transform.position.x < minX || transform.position.x > maxX)
         {
-            Debug.Log(transform.position);
+
             uiManager.TryShowLose();
         }
     }

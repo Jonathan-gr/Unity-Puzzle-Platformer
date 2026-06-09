@@ -72,7 +72,7 @@ public class BounceOffLizard : MonoBehaviour
             // Optional: Give player a small downward push
             playerRb.AddForce(Vector2.down * 8f, ForceMode2D.Impulse);
 
-            Debug.Log("Lizard bounced off Player!");
+            Debug.Log("Lizard bounced off Player back!");
         }
         // if (bounceVelocity < 12f)
         // {

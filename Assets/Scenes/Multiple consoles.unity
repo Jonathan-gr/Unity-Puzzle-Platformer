@@ -8508,6 +8508,10 @@ PrefabInstance:
       propertyPath: m_ChildForceExpandHeight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3096045177233162360, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3412028287138151911, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -8553,6 +8557,10 @@ PrefabInstance:
       value: boss
       objectReference: {fileID: 0}
     - target: {fileID: 8105001501365996958, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8113892466854157842, guid: 7d232a45b72049a41b8a7a9aef30522c, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
