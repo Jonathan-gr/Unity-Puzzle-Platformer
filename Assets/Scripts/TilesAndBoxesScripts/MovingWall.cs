@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MovingWall : MonoBehaviour, IButtonListener
 {
@@ -10,14 +11,15 @@ public class MovingWall : MonoBehaviour, IButtonListener
     private Vector3 targetPos;
     private Coroutine moveRoutine;
 
-    public int buttonsRequired = 2;
-    private int pressCount = 0;
+    public int buttonsRequired = 3;
+
+    // Track WHICH buttons are pressed, not how many times
+    private System.Collections.Generic.HashSet<MonoBehaviour> activeButtons = new HashSet<MonoBehaviour>();
 
     [Header("Sound")]
     public AudioClip openSesame;
     public float openDoorVolume = 0.2f;
     private AudioSource activeLoop;
-
 
     void Start()
     {
@@ -25,22 +27,26 @@ public class MovingWall : MonoBehaviour, IButtonListener
         targetPos = startPos + moveOffset;
     }
 
-    public void OnButtonPressed()
+    public void OnButtonPressed(MonoBehaviour sender)
     {
-        pressCount++;
-        if (pressCount == buttonsRequired || buttonsRequired == 0)
+        activeButtons.Add(sender); // HashSet ignores duplicates automatically
+        Debug.Log($"[MovingWall] Button pressed: {sender.gameObject.name} — active: {activeButtons.Count}/{buttonsRequired}");
+
+        if (activeButtons.Count >= buttonsRequired)
         {
             MoveTo(targetPos);
         }
-
     }
 
-    public void OnButtonReleased()
+    public void OnButtonReleased(MonoBehaviour sender)
     {
-        pressCount--;
+        activeButtons.Remove(sender);
+        Debug.Log($"[MovingWall] Button released: {sender.gameObject.name} — active: {activeButtons.Count}/{buttonsRequired}");
 
-        if (pressCount == buttonsRequired - 1)
+        if (activeButtons.Count < buttonsRequired)
+        {
             MoveTo(startPos);
+        }
     }
 
     void MoveTo(Vector3 target)

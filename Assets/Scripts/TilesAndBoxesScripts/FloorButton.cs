@@ -16,6 +16,10 @@ public class ButtonCollision : MonoBehaviour
     private HashSet<GameObject> pressers = new HashSet<GameObject>();
     public List<string> targetTags = new List<string> { "Player", "Lizard", "MoveableBox", "LazerBullet" };
 
+    [Header("Press Once Settings")]
+    public bool pressOnce = false;
+    private bool hasBeenPressed = false;
+
     void Start()
     {
         if (!animator) animator = GetComponent<Animator>();
@@ -40,15 +44,12 @@ public class ButtonCollision : MonoBehaviour
 
     private IEnumerator ButtonTimerRoutine()
     {
-        // Force the button down
         SetButtonState(true);
-
         yield return new WaitForSeconds(bulletPressDuration);
 
-        // Only release if no physical objects (Player/Box) are still standing on it
         if (pressers.Count == 0)
         {
-            SetButtonState(false);
+            SetButtonState(false); // timer button always releases
         }
 
         timerCoroutine = null;
@@ -80,9 +81,18 @@ public class ButtonCollision : MonoBehaviour
     // --- 3. HELPER METHODS ---
     void SetButtonState(bool isDown)
     {
+        if (pressOnce && hasBeenPressed)
+        {
+            if (!isDown) return; // NEVER release a pressOnce button
+        }
+
+        if (pressOnce && isDown) hasBeenPressed = true;
+
         animator.SetBool("ButtonPushedDown", isDown);
-        if (isDown) NotifyPressed();
-        else NotifyReleased();
+        if (isDown)
+            NotifyPressed();
+        else
+            NotifyReleased();
     }
 
     bool IsValidPresser(GameObject obj)
@@ -90,15 +100,16 @@ public class ButtonCollision : MonoBehaviour
         return targetTags.Contains(obj.tag);
     }
 
+    // In ButtonCollision
     void NotifyPressed()
     {
         foreach (var mb in listeners)
-            if (mb is IButtonListener listener) listener.OnButtonPressed();
+            if (mb is IButtonListener listener) listener.OnButtonPressed(this); // pass this
     }
 
     void NotifyReleased()
     {
         foreach (var mb in listeners)
-            if (mb is IButtonListener listener) listener.OnButtonReleased();
+            if (mb is IButtonListener listener) listener.OnButtonReleased(this); // pass this
     }
 }

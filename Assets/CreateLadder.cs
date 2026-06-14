@@ -7,20 +7,20 @@ public class CreateLadder : MonoBehaviour, IButtonListener
     public float offsetX = -1f;
     public float offsexY = 4.5f;
 
-    public void OnButtonPressed()
+    public void OnButtonPressed(MonoBehaviour sender)
     {
         Vector3 offset = new Vector3(offsetX, offsexY, 0f);
         Instantiate(ladderPrefab, transform.position + offset, Quaternion.identity);
         //Destroy(gameObject);
     }
 
-    public void OnButtonReleased() { }
+    public void OnButtonReleased(MonoBehaviour sender) { }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            OnButtonPressed();
+            OnButtonPressed(null);
         }
     }
 }

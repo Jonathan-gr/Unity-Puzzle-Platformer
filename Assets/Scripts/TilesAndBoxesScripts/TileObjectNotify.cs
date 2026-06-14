@@ -42,7 +42,7 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
         }
     }
 
-    public void OnButtonPressed()
+    public void OnButtonPressed(MonoBehaviour sender)
     {
         // === SWITCH TO RESET MODE ===
         if (!resetNeeded && currentIndex >= tilesToMakeFallInOrder.Count)
@@ -107,5 +107,5 @@ public class TileObjectNotify : MonoBehaviour, IButtonListener
         tile.transform.rotation = originalRotations[index];
     }
 
-    public void OnButtonReleased() { }
+    public void OnButtonReleased(MonoBehaviour sender) { }
 }

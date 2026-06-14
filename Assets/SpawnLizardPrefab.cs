@@ -10,7 +10,7 @@ public class SpawnLizardPrefab : MonoBehaviour, IButtonListener
     public float offsetY = 0;
 
     private GameObject currentLizard;
-    public void OnButtonPressed()
+    public void OnButtonPressed(MonoBehaviour sender)
     {
         if (currentLizard != null)
             Destroy(currentLizard);
@@ -18,5 +18,5 @@ public class SpawnLizardPrefab : MonoBehaviour, IButtonListener
         currentLizard = Instantiate(lizardPrefab, pos, Quaternion.identity);
     }
 
-    public void OnButtonReleased() { }
+    public void OnButtonReleased(MonoBehaviour sender) { }
 }

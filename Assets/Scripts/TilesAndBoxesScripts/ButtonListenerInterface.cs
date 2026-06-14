@@ -1,5 +1,6 @@
+using UnityEngine;
 public interface IButtonListener
 {
-    void OnButtonPressed();
-    void OnButtonReleased();
+    void OnButtonPressed(MonoBehaviour sender);
+    void OnButtonReleased(MonoBehaviour sender);
 }
