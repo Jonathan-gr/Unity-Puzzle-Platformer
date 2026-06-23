@@ -257,7 +257,7 @@ MonoBehaviour:
   lizardPushDownForce: 18
   minLizardPush: 8
   LizardDiedPrefab: {fileID: 2754601109375500354, guid: ad69a576b8a9bc34b97d7370a44eeb3e, type: 3}
-  crushHeight: 23
+  crushHeight: 128
 --- !u!1 &5455264252020318475
 GameObject:
   m_ObjectHideFlags: 0

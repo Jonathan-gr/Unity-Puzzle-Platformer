@@ -112,4 +112,11 @@ public class ButtonCollision : MonoBehaviour
         foreach (var mb in listeners)
             if (mb is IButtonListener listener) listener.OnButtonReleased(this); // pass this
     }
+
+    public void ResetButton()
+    {
+        hasBeenPressed = false;
+        animator.SetBool("ButtonPushedDown", false);
+        NotifyReleased();
+    }
 }
