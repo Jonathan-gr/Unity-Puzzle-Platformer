@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class GravityField : MonoBehaviour
+public class GravityField : MonoBehaviour, IButtonListener
 {
     public bool gravityGoesUp = false;
     public float gravityForceDown = 9.81f;
@@ -22,6 +22,10 @@ public class GravityField : MonoBehaviour
 
     public List<string> allowedTags = new List<string> { "Player", "MovableBox", "Lizard" };
     private HashSet<string> tagSet;
+
+    [Header("Default Values (set these to match your player)")]
+    public float defaultGravityScale = 2f;
+    public float defaultMoveSpeed = 6f; // whatever your player's base speed is
 
     void Awake()
     {
@@ -49,16 +53,21 @@ public class GravityField : MonoBehaviour
         Rigidbody2D rb = other.attachedRigidbody;
         if (rb == null) return;
 
-        if (other.TryGetComponent(out IMoveable moveable))
+        if (oldSpeed.ContainsKey(rb)) return; // block ALL duplicate processing
+
+        IMoveable moveable = rb.GetComponent<IMoveable>();
+        if (moveable == null)
+            moveable = rb.GetComponentInChildren<IMoveable>();
+
+        if (moveable != null)
         {
-            if (!oldSpeed.ContainsKey(rb))
-            {
-                oldSpeed[rb] = moveable.MoveSpeed;
-                oldGravityScale[rb] = rb.gravityScale;
-                rb.gravityScale = newGravityScale;
-                moveable.MoveSpeed *= speedMultiplier;
-            }
+            oldSpeed[rb] = moveable.MoveSpeed;       // save original FIRST
+            oldGravityScale[rb] = rb.gravityScale;   // save original FIRST
+
+            rb.gravityScale = newGravityScale;
+            moveable.MoveSpeed *= speedMultiplier;
         }
+
         rb.linearVelocity *= speedMultiplier;
     }
 
@@ -103,27 +112,51 @@ public class GravityField : MonoBehaviour
         Rigidbody2D rb = other.attachedRigidbody;
         if (rb == null) return;
 
+        if (!tagSet.Contains(other.tag)) return; // add this check you're missing
+
         // Reset Rotation
         if (other.CompareTag("Player"))
         {
-            other.transform.rotation = Quaternion.Euler(0, 0, 0);
+            other.transform.root.rotation = Quaternion.Euler(0, 0, 0);
         }
         else if (other.CompareTag("Lizard"))
         {
-            Transform visual = other.transform.Find("Visual");
+            Transform visual = other.transform.root.Find("Visual");
             if (visual != null)
                 visual.rotation = Quaternion.Euler(0, 0, 0);
         }
 
-        // Reset movement values
-        if (other.TryGetComponent(out IMoveable moveable) &&
-            oldSpeed.TryGetValue(rb, out float originalSpeed) &&
-            oldGravityScale.TryGetValue(rb, out float originalGravityScale))
+        // Get IMoveable from root, not from the specific collider
+        IMoveable moveable = rb.GetComponent<IMoveable>();
+        if (moveable == null)
+            moveable = rb.GetComponentInChildren<IMoveable>();
+
+        if (moveable != null && oldSpeed.ContainsKey(rb))
         {
-            moveable.MoveSpeed = originalSpeed;
-            rb.gravityScale = originalGravityScale;
+            moveable.MoveSpeed = defaultMoveSpeed;
+            rb.gravityScale = defaultGravityScale;
             oldSpeed.Remove(rb);
             oldGravityScale.Remove(rb);
         }
     }
+
+    public void OnButtonPressed(MonoBehaviour sender)
+    {
+        gravityGoesUp = !gravityGoesUp;
+
+        if (gravityGoesUp)
+        {
+            gravityForce = gravityForceUp;
+            speedMultiplier = speedMultiplierUp;
+            transform.rotation = Quaternion.Euler(0, 0, 180);
+        }
+        else
+        {
+            gravityForce = gravityForceDown;
+            speedMultiplier = speedMultiplierDown;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+    }
+
+    public void OnButtonReleased(MonoBehaviour sender) { } // nothing on release
 }
