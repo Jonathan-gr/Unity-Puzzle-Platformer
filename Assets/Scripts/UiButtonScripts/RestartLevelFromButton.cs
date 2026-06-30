@@ -8,5 +8,6 @@ public class RestartLevelFromButton : MonoBehaviour
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentSceneName);
+        Time.timeScale = 1f;
     }
 }
