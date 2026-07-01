@@ -6,42 +6,50 @@ public class GravityField : MonoBehaviour, IButtonListener
     public bool gravityGoesUp = false;
     public float gravityForceDown = 9.81f;
     public float gravityForceUp = 10f;
-    public float gravityForce;
+    private float gravityForce;
 
     [Header("Movement Settings")]
-    public float speedMultiplier = 0.5f;
     public float speedMultiplierDown = 0.3f;
     public float speedMultiplierUp = 0.6f;
-    public float newGravityScale = 1f;
+    public float newGravityScale = 0f; // 0 = no Unity gravity, field handles it
 
     [Header("Rotation Settings")]
     public float rotationSpeed = 5f;
 
-    private Dictionary<Rigidbody2D, float> oldSpeed = new Dictionary<Rigidbody2D, float>();
-    private Dictionary<Rigidbody2D, float> oldGravityScale = new Dictionary<Rigidbody2D, float>();
+    [Header("Default Values")]
+    public float defaultGravityScale = 2f;
+    public float defaultMoveSpeed = 6f;
+    public float defaultLizardMoveSpeed = 2f;
 
     public List<string> allowedTags = new List<string> { "Player", "MovableBox", "Lizard" };
     private HashSet<string> tagSet;
 
-    [Header("Default Values (set these to match your player)")]
-    public float defaultGravityScale = 2f;
-    public float defaultMoveSpeed = 6f; // whatever your player's base speed is
+    // Track original values per rigidbody
+    private static Dictionary<Rigidbody2D, float> originalSpeed = new Dictionary<Rigidbody2D, float>();
+    private static Dictionary<Rigidbody2D, float> originalGravityScale = new Dictionary<Rigidbody2D, float>();
+
+    // Static: shared across ALL GravityField instances
+    // Tracks how many fields each rigidbody is currently inside
+    private static Dictionary<Rigidbody2D, int> fieldCount = new Dictionary<Rigidbody2D, int>();
+    // Tracks which field is currently "owning" each rigidbody
+    private static Dictionary<Rigidbody2D, GravityField> activeField = new Dictionary<Rigidbody2D, GravityField>();
 
     void Awake()
     {
         tagSet = new HashSet<string>(allowedTags);
+        UpdateFieldSettings();
+    }
 
+    void UpdateFieldSettings()
+    {
         if (gravityGoesUp)
         {
             gravityForce = gravityForceUp;
-            speedMultiplier = speedMultiplierUp;
             transform.rotation = Quaternion.Euler(0, 0, 180);
-
         }
         else
         {
             gravityForce = gravityForceDown;
-            speedMultiplier = speedMultiplierDown;
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
@@ -53,37 +61,109 @@ public class GravityField : MonoBehaviour, IButtonListener
         Rigidbody2D rb = other.attachedRigidbody;
         if (rb == null) return;
 
-        if (oldSpeed.ContainsKey(rb)) return; // block ALL duplicate processing
+        bool alreadyInAField = fieldCount.ContainsKey(rb) && fieldCount[rb] > 0;
 
-        IMoveable moveable = rb.GetComponent<IMoveable>();
-        if (moveable == null)
-            moveable = rb.GetComponentInChildren<IMoveable>();
+        if (!fieldCount.ContainsKey(rb))
+            fieldCount[rb] = 0;
+        fieldCount[rb]++;
 
-        if (moveable != null)
+        if (!alreadyInAField)
         {
-            oldSpeed[rb] = moveable.MoveSpeed;       // save original FIRST
-            oldGravityScale[rb] = rb.gravityScale;   // save original FIRST
+            // First field entry ever — save originals and apply modifications
+            IMoveable moveable = GetMoveable(rb);
+            if (moveable != null)
+            {
+                originalSpeed[rb] = moveable.MoveSpeed;
+                originalGravityScale[rb] = rb.gravityScale;
+                rb.gravityScale = newGravityScale;
+                moveable.MoveSpeed *= GetSpeedMultiplier();
+            }
+            else
+            {
+                originalGravityScale[rb] = rb.gravityScale;
+                rb.gravityScale = newGravityScale;
+            }
 
+            rb.linearVelocity *= GetSpeedMultiplier();
+        }
+        else
+        {
+            // Already in another field — just update gravity scale to this field's
+            // but DON'T touch MoveSpeed or re-apply multiplier
             rb.gravityScale = newGravityScale;
-            moveable.MoveSpeed *= speedMultiplier;
         }
 
-        rb.linearVelocity *= speedMultiplier;
+        // This field takes ownership
+        activeField[rb] = this;
     }
 
     void OnTriggerStay2D(Collider2D other)
     {
-        Rigidbody2D rb = other.attachedRigidbody;
-        if (rb == null || !tagSet.Contains(other.tag)) return;
+        if (!tagSet.Contains(other.tag)) return;
 
-        // Apply Gravity Force
+        Rigidbody2D rb = other.attachedRigidbody;
+        if (rb == null) return;
+
+        // Only the active field applies force — prevents double gravity
+        if (!activeField.TryGetValue(rb, out GravityField owner) || owner != this)
+            return;
+
         Vector2 direction = gravityGoesUp ? Vector2.up : Vector2.down;
         rb.AddForce(direction * gravityForce * rb.mass);
 
-        // === DIFFERENT ROTATION BEHAVIOR ===
+        HandleRotation(other);
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (!tagSet.Contains(other.tag)) return;
+
+        Rigidbody2D rb = other.attachedRigidbody;
+        if (rb == null) return;
+
+        if (!fieldCount.ContainsKey(rb)) return;
+        fieldCount[rb]--;
+
+        if (fieldCount[rb] <= 0)
+        {
+            // Left ALL fields — restore everything
+            fieldCount.Remove(rb);
+            activeField.Remove(rb);
+
+            IMoveable moveable = GetMoveable(rb);
+            if (moveable != null && originalSpeed.ContainsKey(rb))
+                moveable.MoveSpeed = originalSpeed[rb];
+
+            if (originalGravityScale.ContainsKey(rb))
+                rb.gravityScale = originalGravityScale[rb];
+
+            originalSpeed.Remove(rb);
+            originalGravityScale.Remove(rb);
+
+            ResetRotation(other);
+        }
+        // If still in another field, do nothing — active field is already
+        // set to the new field by its OnTriggerEnter2D
+    }
+
+    // ─── Helpers ────────────────────────────────────────────────────────────────
+
+    float GetSpeedMultiplier()
+    {
+        return gravityGoesUp ? speedMultiplierUp : speedMultiplierDown;
+    }
+
+    IMoveable GetMoveable(Rigidbody2D rb)
+    {
+        IMoveable m = rb.GetComponent<IMoveable>();
+        if (m == null) m = rb.GetComponentInChildren<IMoveable>();
+        return m;
+    }
+
+    void HandleRotation(Collider2D other)
+    {
         if (other.CompareTag("Player"))
         {
-            // PLAYER: Rotate root (old behavior)
             float targetZ = gravityGoesUp ? 180f : 0f;
             other.transform.rotation = Quaternion.Lerp(
                 other.transform.rotation,
@@ -93,7 +173,6 @@ public class GravityField : MonoBehaviour, IButtonListener
         }
         else if (other.CompareTag("Lizard"))
         {
-            // LIZARD: Rotate only Visual child
             Transform visual = other.transform.Find("Visual");
             if (visual != null)
             {
@@ -107,56 +186,23 @@ public class GravityField : MonoBehaviour, IButtonListener
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    void ResetRotation(Collider2D other)
     {
-        Rigidbody2D rb = other.attachedRigidbody;
-        if (rb == null) return;
-
-        if (!tagSet.Contains(other.tag)) return; // add this check you're missing
-
-        // Reset Rotation
         if (other.CompareTag("Player"))
-        {
             other.transform.root.rotation = Quaternion.Euler(0, 0, 0);
-        }
         else if (other.CompareTag("Lizard"))
         {
             Transform visual = other.transform.root.Find("Visual");
             if (visual != null)
                 visual.rotation = Quaternion.Euler(0, 0, 0);
         }
-
-        // Get IMoveable from root, not from the specific collider
-        IMoveable moveable = rb.GetComponent<IMoveable>();
-        if (moveable == null)
-            moveable = rb.GetComponentInChildren<IMoveable>();
-
-        if (moveable != null && oldSpeed.ContainsKey(rb))
-        {
-            moveable.MoveSpeed = defaultMoveSpeed;
-            rb.gravityScale = defaultGravityScale;
-            oldSpeed.Remove(rb);
-            oldGravityScale.Remove(rb);
-        }
     }
 
     public void OnButtonPressed(MonoBehaviour sender)
     {
         gravityGoesUp = !gravityGoesUp;
-
-        if (gravityGoesUp)
-        {
-            gravityForce = gravityForceUp;
-            speedMultiplier = speedMultiplierUp;
-            transform.rotation = Quaternion.Euler(0, 0, 180);
-        }
-        else
-        {
-            gravityForce = gravityForceDown;
-            speedMultiplier = speedMultiplierDown;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
+        UpdateFieldSettings();
     }
 
-    public void OnButtonReleased(MonoBehaviour sender) { } // nothing on release
+    public void OnButtonReleased(MonoBehaviour sender) { }
 }

@@ -64,7 +64,6 @@ public class ButtonCollision : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!IsValidPresser(collision.gameObject)) return;
-
         if (toggleMode)
         {
             GameObject root = collision.transform.root.gameObject;
@@ -73,13 +72,9 @@ public class ButtonCollision : MonoBehaviour
 
             toggleState = !toggleState;
             animator.SetBool("ButtonPushedDown", true);
-            if (toggleState)
-                NotifyPressed();
-            else
-                NotifyReleased();
+            NotifyPressed(); // always notify pressed — let the listener decide what toggling means
             return;
         }
-
         if (pressers.Add(collision.gameObject) && pressers.Count == 1)
         {
             if (timerCoroutine != null) { StopCoroutine(timerCoroutine); timerCoroutine = null; }

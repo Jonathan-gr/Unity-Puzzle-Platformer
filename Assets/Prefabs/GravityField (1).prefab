@@ -47,14 +47,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gravityGoesUp: 1
-  gravityForceDown: 15
-  gravityForceUp: 12
+  gravityForceDown: 0.62
+  gravityForceUp: 14.5
   gravityForce: 15
-  speedMultiplier: 0.8
   speedMultiplierDown: 0.3
   speedMultiplierUp: 0.8
-  newGravityScale: 1
+  newGravityScale: 0.8
   rotationSpeed: 2
+  defaultGravityScale: 2
+  defaultMoveSpeed: 6
+  defaultLizardMoveSpeed: 2
   allowedTags:
   - Player
   - Box
