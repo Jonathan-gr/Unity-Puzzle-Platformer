@@ -9,10 +9,22 @@ public class SpikePlayerCollision : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Sd");
         if (!collision.CompareTag("Player")) return;
+
 
         uiManager.TryShowLose();
         Time.timeScale = 0f;
 
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Sd");
+        if (!collision.gameObject.CompareTag("Player")) return;
+
+
+        uiManager.TryShowLose();
+        Time.timeScale = 0f;
     }
 }
