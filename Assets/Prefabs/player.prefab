@@ -97,7 +97,6 @@ GameObject:
   - component: {fileID: 6699427068299315632}
   - component: {fileID: 7411197881580119219}
   - component: {fileID: 7798705274066446399}
-  - component: {fileID: 5643405638023994024}
   m_Layer: 9
   m_Name: player
   m_TagString: Player
@@ -350,23 +349,6 @@ MonoBehaviour:
   - MoveableBox
   - Lizard
   - FallingTile
---- !u!114 &5643405638023994024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4753502819146291371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e1456781c9785e4eb967182e21e0c58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiManager: {fileID: 2005633842928943401, guid: bcaff4dbbeb527f47abe96dc8d9c508f, type: 3}
-  minY: -20
-  maxY: Infinity
-  minX: -Infinity
-  maxX: Infinity
 --- !u!1 &8242321403405768583
 GameObject:
   m_ObjectHideFlags: 0
