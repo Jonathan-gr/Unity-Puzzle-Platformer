@@ -16,6 +16,7 @@ TagManager:
   - Gem
   - Aarakocra
   - Console
+  - OutOfBounds
   layers:
   - Default
   - TransparentFX
